@@ -112,7 +112,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
         };
 
         setupActionBar();
-        mCastManager.reconnectSessionIfPossible();
+        mCastManager.reconnectSessionIfPossible(20);
     }
 
     private void setupActionBar() {

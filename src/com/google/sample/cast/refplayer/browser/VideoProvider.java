@@ -152,7 +152,6 @@ public class VideoProvider {
         movieMetadata.putString(MediaMetadata.KEY_STUDIO, studio);
         movieMetadata.addImage(new WebImage(Uri.parse(imgUrl)));
         movieMetadata.addImage(new WebImage(Uri.parse(bigImageUrl)));
-
         return new MediaInfo.Builder(url)
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setContentType(getMediaType())
