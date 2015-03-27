@@ -16,9 +16,7 @@
 
 package com.google.sample.cast.refplayer;
 
-import com.google.sample.cast.refplayer.settings.CastPreference;
-import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.utils.Utils;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 
 import android.app.Application;
 
@@ -26,8 +24,8 @@ import android.app.Application;
  * The {@link Application} for this demo application.
  */
 public class CastApplication extends Application {
-    private static String sApplicationId;
-    private static VideoCastManager sCastMgr = null;
+
+    private static String APPLICATION_ID;
     public static final double VOLUME_INCREMENT = 0.05;
 
     /*
@@ -37,31 +35,17 @@ public class CastApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sApplicationId = getString(R.string.app_id);
-        initializeCastManager();
-        Utils.saveFloatToPreference(getApplicationContext(),
-                VideoCastManager.PREFS_KEY_VOLUME_INCREMENT, (float) VOLUME_INCREMENT);
-    }
+        APPLICATION_ID = getString(R.string.app_id);
 
-    private void initializeCastManager() {
-        sCastMgr = VideoCastManager.initialize(getApplicationContext(), sApplicationId, null, null);
-        sCastMgr.enableFeatures(
-                VideoCastManager.FEATURE_NOTIFICATION |
+        // initialize VideoCastManager; from this point on, access this singleton
+        // using VideoCastManager.getInstance()
+        VideoCastManager.
+                initialize(this, APPLICATION_ID, null, null).
+                setVolumeStep(VOLUME_INCREMENT).
+                enableFeatures(VideoCastManager.FEATURE_NOTIFICATION |
                         VideoCastManager.FEATURE_LOCKSCREEN |
                         VideoCastManager.FEATURE_WIFI_RECONNECT |
                         VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                         VideoCastManager.FEATURE_DEBUGGING);
-        String destroyOnExitStr = Utils.getStringFromPreference(getApplicationContext(),
-                CastPreference.TERMINATION_POLICY_KEY);
-        sCastMgr.setStopOnDisconnect(null != destroyOnExitStr
-                && CastPreference.STOP_ON_DISCONNECT.equals(destroyOnExitStr));
     }
-
-    public static VideoCastManager getCastManager() {
-        if (sCastMgr == null) {
-            throw new IllegalStateException("Application has not been started");
-        }
-        return sCastMgr;
-    }
-
 }

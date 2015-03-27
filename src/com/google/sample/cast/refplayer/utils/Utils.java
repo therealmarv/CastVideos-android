@@ -16,10 +16,10 @@
 
 package com.google.sample.cast.refplayer.utils;
 
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastException;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.google.sample.cast.refplayer.R;
-import com.google.sample.castcompanionlibrary.cast.exceptions.CastException;
-import com.google.sample.castcompanionlibrary.cast.exceptions.NoConnectionException;
-import com.google.sample.castcompanionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -128,9 +128,6 @@ public class Utils {
      * <li><code>R.string.connection_lost</code></li>
      * <li><code>R.string.failed_to_perform_action</code></li>
      * </ul>
-     *
-     * @param context
-     * @param e
      */
     public static void handleException(Context context, Exception e) {
         int resourceId = 0;
@@ -157,9 +154,6 @@ public class Utils {
 
     /**
      * Gets the version of app.
-     *
-     * @param context
-     * @return
      */
     public static String getAppVersionName(Context context) {
         String versionString = null;
@@ -171,6 +165,13 @@ public class Utils {
             // do nothing
         }
         return versionString;
+    }
+
+    /**
+     * Shows a (long) toast
+     */
+    public static void showToast(Context context, String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
     /**

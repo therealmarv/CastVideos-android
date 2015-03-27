@@ -17,15 +17,17 @@
 package com.google.sample.cast.refplayer.mediaplayer;
 
 import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.android.gms.cast.CastStatusCodes;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.google.sample.cast.refplayer.CastApplication;
 import com.google.sample.cast.refplayer.R;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 import com.google.sample.cast.refplayer.utils.Utils;
-import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.sample.castcompanionlibrary.widgets.MiniController;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -117,7 +119,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
         setContentView(R.layout.player_activity);
         mAquery = new AQuery(this);
         loadViews();
-        mCastManager = CastApplication.getCastManager();
+        mCastManager = VideoCastManager.getInstance();
         setupActionBar();
         setupControlsCallbacks();
         setupMiniController();
@@ -125,8 +127,8 @@ public class LocalPlayerActivity extends ActionBarActivity {
         // see what we need to play and were
         Bundle b = getIntent().getExtras();
         if (null != b) {
-            mSelectedMedia = com.google.sample.castcompanionlibrary.utils.Utils
-                    .toMediaInfo(getIntent().getBundleExtra("media"));
+            mSelectedMedia = com.google.android.libraries.cast.companionlibrary.utils.Utils
+                    .bundleToMediaInfo(getIntent().getBundleExtra("media"));
             mShouldStartPlayback = b.getBoolean("shouldStart");
             int startPosition = b.getInt("startPosition", 0);
             mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
@@ -175,6 +177,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
                         } catch (Exception e) {
                             Utils.handleException(LocalPlayerActivity.this, e);
                         }
+                        return;
                     } else {
                         updatePlaybackLocation(PlaybackLocation.REMOTE);
                     }
@@ -220,6 +223,32 @@ public class LocalPlayerActivity extends ActionBarActivity {
                         R.string.connection_recovered);
             }
 
+            @Override
+            public void onApplicationConnectionFailed(int errorCode) {
+                switch (errorCode) {
+                    case CastStatusCodes.APPLICATION_NOT_FOUND:
+                        Log.d(TAG, "onApplicationConnectionFailed(): failed due to: "
+                                + "ERROR_APPLICATION_NOT_FOUND");
+                        Utils.showToast(LocalPlayerActivity.this, R.string.failed_to_find_app);
+                        break;
+                    case CastStatusCodes.TIMEOUT:
+                        Log.d(TAG, "onApplicationConnectionFailed(): failed due to: ERROR_TIMEOUT");
+                        Utils.showToast(LocalPlayerActivity.this,
+                                R.string.failed_app_launch_timeout);
+                        break;
+                    default:
+                        Log.d(TAG, "onApplicationConnectionFailed(): failed due to: error code="
+                                + errorCode);
+                        Utils.showToast(LocalPlayerActivity.this,
+                                R.string.failed_to_launch_app);
+                        break;
+                }
+            }
+
+            @Override
+            public void onConnectionFailed(ConnectionResult result) {
+                Utils.showToast(LocalPlayerActivity.this, R.string.failed_to_connect);
+            }
         };
     }
 
@@ -237,14 +266,14 @@ public class LocalPlayerActivity extends ActionBarActivity {
                 startControllersTimer();
             } else {
                 stopControllersTimer();
-                setCoverArtStatus(com.google.sample.castcompanionlibrary.utils.Utils.
+                setCoverArtStatus(com.google.android.libraries.cast.companionlibrary.utils.Utils.
                         getImageUrl(mSelectedMedia, 0));
             }
 
             getSupportActionBar().setTitle("");
         } else {
             stopControllersTimer();
-            setCoverArtStatus(com.google.sample.castcompanionlibrary.utils.Utils.
+            setCoverArtStatus(com.google.android.libraries.cast.companionlibrary.utils.Utils.
                     getImageUrl(mSelectedMedia, 0));
             updateControllersVisibility(true);
         }
@@ -292,7 +321,6 @@ public class LocalPlayerActivity extends ActionBarActivity {
                     case REMOTE:
                         try {
                             mCastManager.checkConnectivity();
-                            Log.d(TAG, "Playing remotely...");
                             loadRemoteMedia(0, true);
                             finish();
                         } catch (Exception e) {
@@ -325,7 +353,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
     }
 
     private void loadRemoteMedia(int position, boolean autoPlay) {
-        mCastManager.startCastControllerActivity(this, mSelectedMedia, position, autoPlay);
+        mCastManager.startVideoCastControllerActivity(this, mSelectedMedia, position, autoPlay);
     }
 
     private void setCoverArtStatus(String url) {
@@ -417,7 +445,6 @@ public class LocalPlayerActivity extends ActionBarActivity {
         if (null != mCastManager) {
             mMini.removeOnMiniControllerChangedListener(mCastManager);
             mCastManager.removeMiniController(mMini);
-            mCastManager.clearContext(this);
             mCastConsumer = null;
         }
         stopControllersTimer();
@@ -434,7 +461,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
-        mCastManager = CastApplication.getCastManager();
+        mCastManager = VideoCastManager.getInstance();
         mCastManager.addVideoCastConsumer(mCastConsumer);
         mMini.setOnMiniControllerChangedListener(mCastManager);
         mCastManager.incrementUiCounter();
@@ -503,7 +530,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
             public void onPrepared(MediaPlayer mp) {
                 Log.d(TAG, "onPrepared is reached");
                 mDuration = mp.getDuration();
-                mEndText.setText(com.google.sample.castcompanionlibrary.utils.Utils
+                mEndText.setText(com.google.android.libraries.cast.companionlibrary.utils.Utils
                         .formatMillis(mDuration));
                 mSeekbar.setMax(mDuration);
                 restartTrickplayTimer();
@@ -554,7 +581,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                     boolean fromUser) {
-                mStartText.setText(com.google.sample.castcompanionlibrary.utils.Utils
+                mStartText.setText(com.google.android.libraries.cast.companionlibrary.utils.Utils
                         .formatMillis(progress));
             }
         });
@@ -579,9 +606,10 @@ public class LocalPlayerActivity extends ActionBarActivity {
     private void updateSeekbar(int position, int duration) {
         mSeekbar.setProgress(position);
         mSeekbar.setMax(duration);
-        mStartText.setText(com.google.sample.castcompanionlibrary.utils.Utils
+        mStartText.setText(com.google.android.libraries.cast.companionlibrary.utils.Utils
                 .formatMillis(position));
-        mEndText.setText(com.google.sample.castcompanionlibrary.utils.Utils.formatMillis(duration));
+        mEndText.setText(com.google.android.libraries.cast.companionlibrary.utils.Utils
+                .formatMillis(duration));
     }
 
     private void updatePlayButton(PlaybackState state) {
@@ -644,7 +672,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
             mDisplaySize = Utils.getDisplaySize(this);
             RelativeLayout.LayoutParams lp = new
                     RelativeLayout.LayoutParams(mDisplaySize.x,
-                            mDisplaySize.y + getSupportActionBar().getHeight());
+                    mDisplaySize.y + getSupportActionBar().getHeight());
             lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             mVideoView.setLayoutParams(lp);
             mVideoView.invalidate();
@@ -659,7 +687,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
             mDisplaySize = Utils.getDisplaySize(this);
             RelativeLayout.LayoutParams lp = new
                     RelativeLayout.LayoutParams(mDisplaySize.x,
-                            (int) (mDisplaySize.x * mAspectRatio));
+                    (int) (mDisplaySize.x * mAspectRatio));
             lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             mVideoView.setLayoutParams(lp);
             mVideoView.invalidate();

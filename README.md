@@ -51,6 +51,10 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+1.6
+ * Adapting to the CCL v2.0
+ * Fixing some typos and minor issues
+
 1.5
  * Adapting to the CCL v1.12
  * Fixing some typos
@@ -61,7 +65,7 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
 
 1.3
  * Added support for Closed Captions based on enhancements made in CCL. Three new videos have been
-   added to the beginning of the list of videos; these three include captions. 
+   added to the beginning of the list of videos; these three include captions.
 
 1.2
  * Updated the build.gradle to work with the latest version of the Android Studio Beta (0.8.1). You may need to upgrade your

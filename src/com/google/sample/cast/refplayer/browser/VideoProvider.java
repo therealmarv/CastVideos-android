@@ -24,6 +24,10 @@ import com.google.android.gms.common.images.WebImage;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,16 +37,12 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class VideoProvider {
 
     private static final String TAG = "VideoProvider";
     private static String TAG_MEDIA = "videos";
     private static String THUMB_PREFIX_URL =
-           "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/";
+            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/";
     private static String TAG_CATEGORIES = "categories";
     private static String TAG_NAME = "name";
     private static String TAG_STUDIO = "studio";
@@ -133,7 +133,6 @@ public class VideoProvider {
                                 }
                             }
                         }
-
                         mediaList.add(buildMediaInfo(title, studio, subTitle, videoUrl, imageurl,
                                 bigImageurl, tracks));
                     }
@@ -152,6 +151,7 @@ public class VideoProvider {
         movieMetadata.putString(MediaMetadata.KEY_STUDIO, studio);
         movieMetadata.addImage(new WebImage(Uri.parse(imgUrl)));
         movieMetadata.addImage(new WebImage(Uri.parse(bigImageUrl)));
+
         return new MediaInfo.Builder(url)
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setContentType(getMediaType())

@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.sample.cast.refplayer"
-    android:versionCode="6"
-    android:versionName="1.5" >
+    android:versionCode="7"
+    android:versionName="1.6" >
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -41,17 +56,17 @@
             android:name="com.google.sample.cast.refplayer.mediaplayer.LocalPlayerActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.google.sample.castcompanionlibrary.cast.player.VideoCastControllerActivity"
+            android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:parentActivityName="com.google.sample.cast.refplayer.VideoBrowserActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.google.sample.cast.refplayer.VideoBrowserActivity" />
@@ -68,32 +83,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.google.sample.castcompanionlibrary.cast.tracks.CaptionsPreferenceActivity"
+            android:name="com.google.android.libraries.cast.companionlibrary.cast.tracks.CaptionsPreferenceActivity"
             android:label="@string/action_settings" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <receiver android:name="com.google.sample.castcompanionlibrary.remotecontrol.VideoIntentReceiver" >
+        <receiver android:name="com.google.android.libraries.cast.companionlibrary.remotecontrol.VideoIntentReceiver" >
             <intent-filter>
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
-                <action android:name="com.google.sample.castcompanionlibrary.action.toggleplayback" />
-                <action android:name="com.google.sample.castcompanionlibrary.action.stop" />
+                <action android:name="com.google.android.libraries.cast.companionlibrary.action.toggleplayback" />
+                <action android:name="com.google.android.libraries.cast.companionlibrary.action.stop" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.google.sample.castcompanionlibrary.notification.VideoCastNotificationService"
+            android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="com.google.sample.castcompanionlibrary.action.toggleplayback" />
-                <action android:name="com.google.sample.castcompanionlibrary.action.stop" />
-                <action android:name="com.google.sample.castcompanionlibrary.action.notificationvisibility" />
+                <action android:name="com.google.android.libraries.cast.companionlibrary.action.toggleplayback" />
+                <action android:name="com.google.android.libraries.cast.companionlibrary.action.stop" />
+                <action android:name="com.google.android.libraries.cast.companionlibrary.action.notificationvisibility" />
             </intent-filter>
         </service>
 
-        <service android:name="com.google.sample.castcompanionlibrary.cast.reconnection.ReconnectionService"/>
+        <service android:name="com.google.android.libraries.cast.companionlibrary.cast.reconnection.ReconnectionService"/>
     </application>
 
 </manifest>

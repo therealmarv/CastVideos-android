@@ -16,11 +16,13 @@
 
 package com.google.sample.cast.refplayer;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.android.libraries.cast.companionlibrary.utils.Utils;
+import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.google.sample.cast.refplayer.settings.CastPreference;
-import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.cast.callbacks.IVideoCastConsumer;
-import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.sample.castcompanionlibrary.widgets.MiniController;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -44,12 +46,11 @@ public class VideoBrowserActivity extends ActionBarActivity {
 
     private static final String TAG = "VideoBrowserActivity";
     private VideoCastManager mCastManager;
-    private IVideoCastConsumer mCastConsumer;
+    private VideoCastConsumer mCastConsumer;
     private MiniController mMini;
     private MenuItem mediaRouteMenuItem;
-    boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    private boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private Toolbar mToolbar;
-
     /*
      * (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
@@ -60,7 +61,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
         VideoCastManager.checkGooglePlayServices(this);
         setContentView(R.layout.video_browser);
 
-        mCastManager = CastApplication.getCastManager();
+        mCastManager = VideoCastManager.getInstance();
 
         // -- Adding MiniController
         mMini = (MiniController) findViewById(R.id.miniController1);
@@ -97,7 +98,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
                         @Override
                         public void run() {
                             if (mediaRouteMenuItem.isVisible()) {
-                                Log.d(TAG, "Cast Icon is visible:  " + info.getName());
+                                Log.d(TAG, "Cast Icon is visible: " + info.getName());
                                 showFtu();
                             }
                         }
@@ -106,8 +107,8 @@ public class VideoBrowserActivity extends ActionBarActivity {
             }
 
             @Override
-            public void onReconnectionStatusChanged(int status) {
-                Log.d(TAG, "onReconnectionStatusChanged(): " + status);
+            public void onConnectionFailed(ConnectionResult result) {
+                Utils.showToast(VideoBrowserActivity.this, R.string.failed_to_connect);
             }
         };
 
@@ -126,6 +127,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
+
         mediaRouteMenuItem = mCastManager.
                 addMediaRouterButton(menu, R.id.media_route_menu_item);
 
@@ -170,7 +172,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
-        mCastManager = CastApplication.getCastManager();
+        mCastManager = VideoCastManager.getInstance();
         mCastManager.addVideoCastConsumer(mCastConsumer);
         mCastManager.incrementUiCounter();
 
@@ -190,7 +192,6 @@ public class VideoBrowserActivity extends ActionBarActivity {
         if (null != mCastManager) {
             mMini.removeOnMiniControllerChangedListener(mCastManager);
             mCastManager.removeMiniController(mMini);
-            mCastManager.clearContext(this);
         }
         super.onDestroy();
     }

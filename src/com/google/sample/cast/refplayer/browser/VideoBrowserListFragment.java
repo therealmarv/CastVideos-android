@@ -17,9 +17,9 @@
 package com.google.sample.cast.refplayer.browser;
 
 import com.google.android.gms.cast.MediaInfo;
+import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 import com.google.sample.cast.refplayer.R;
 import com.google.sample.cast.refplayer.mediaplayer.LocalPlayerActivity;
-import com.google.sample.castcompanionlibrary.utils.Utils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +34,6 @@ import java.util.List;
 public class VideoBrowserListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<List<MediaInfo>> {
 
-    private static final String TAG = "VideoBrowserListFragment";
     private static final String CATALOG_URL =
             "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/d.json";
     private VideoListAdapter mAdapter;
@@ -87,7 +86,7 @@ public class VideoBrowserListFragment extends ListFragment implements
 
     private void handleNavigation(MediaInfo info, boolean autoStart) {
         Intent intent = new Intent(getActivity(), LocalPlayerActivity.class);
-        intent.putExtra("media", Utils.fromMediaInfo(info));
+        intent.putExtra("media", Utils.mediaInfoToBundle(info));
         intent.putExtra("shouldStart", autoStart);
         getActivity().startActivity(intent);
     }
@@ -114,4 +113,5 @@ public class VideoBrowserListFragment extends ListFragment implements
         f.setArguments(b);
         return f;
     }
+
 }
