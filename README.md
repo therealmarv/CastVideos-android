@@ -52,7 +52,7 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
-1.7
+2.0
  * Adapting to CCL 2.1 and adding support for Autoplay and Queueing. Note: in order to see the full capabilities for the
  autoplay, both on the sender and on the receiver, you would need to use the [reference receiver] (https://github.com/googlecast/Cast-Player-Sample)
   that is part of the samples.
