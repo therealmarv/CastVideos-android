@@ -19,7 +19,6 @@
 -->
 
 <resources>
-
-    <color name="pressed_democast">#CC33B5E5</color>
-
+     <color name="pressed_democast">#CC33B5E5</color>
+     <color name="green">#1E9618</color>
 </resources>

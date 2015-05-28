@@ -16,12 +16,12 @@
 
 package com.google.sample.cast.refplayer;
 
-import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
+import com.google.sample.cast.refplayer.queue.ui.QueueListViewActivity;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 
 import android.annotation.TargetApi;
@@ -71,7 +71,22 @@ public class VideoBrowserActivity extends ActionBarActivity {
 
             @Override
             public void onFailed(int resourceId, int statusCode) {
+                String reason = "Not Available";
+                if (resourceId > 0) {
+                    reason = getString(resourceId);
+                }
+                Log.e(TAG, "Action failed, reason:  " + reason + ", status code: " + statusCode);
+            }
 
+            @Override
+            public void onApplicationConnected(ApplicationMetadata appMetadata, String sessionId,
+                    boolean wasLaunched) {
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDisconnected() {
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -105,28 +120,23 @@ public class VideoBrowserActivity extends ActionBarActivity {
                     }, 1000);
                 }
             }
-
-            @Override
-            public void onConnectionFailed(ConnectionResult result) {
-                Utils.showToast(VideoBrowserActivity.this, R.string.failed_to_connect);
-            }
         };
 
         setupActionBar();
-        mCastManager.reconnectSessionIfPossible(20);
+        mCastManager.reconnectSessionIfPossible();
     }
 
     private void setupActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setLogo(R.drawable.actionbar_logo_castvideos);
-        mToolbar.setTitle("");
+        //mToolbar.setLogo(R.drawable.actionbar_logo_castvideos);
+        mToolbar.setTitle(R.string.app_name);
         setSupportActionBar(mToolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.browse, menu);
 
         mediaRouteMenuItem = mCastManager.
                 addMediaRouterButton(menu, R.id.media_route_menu_item);
@@ -135,20 +145,27 @@ public class VideoBrowserActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_show_queue).setVisible(mCastManager.isConnected());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent i = new Intent(VideoBrowserActivity.this, CastPreference.class);
+                i = new Intent(VideoBrowserActivity.this, CastPreference.class);
+                startActivity(i);
+                break;
+            case R.id.action_show_queue:
+                i = new Intent(VideoBrowserActivity.this, QueueListViewActivity.class);
                 startActivity(i);
                 break;
         }
         return true;
     }
 
-    /**
-     * The getActionView() method used in this method requires API 11 or above. If one needs to
-     * extend this below that version, one possible solution could be using reflection and such.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void showFtu() {
         Menu menu = mToolbar.getMenu();
@@ -173,8 +190,10 @@ public class VideoBrowserActivity extends ActionBarActivity {
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
         mCastManager = VideoCastManager.getInstance();
-        mCastManager.addVideoCastConsumer(mCastConsumer);
-        mCastManager.incrementUiCounter();
+        if (null != mCastManager) {
+            mCastManager.addVideoCastConsumer(mCastConsumer);
+            mCastManager.incrementUiCounter();
+        }
 
         super.onResume();
     }

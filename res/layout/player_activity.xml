@@ -25,7 +25,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow7"
         android:visibility="gone" >
     </com.google.android.libraries.cast.companionlibrary.widgets.MiniController>
 
@@ -35,19 +34,33 @@
         android:layout_height="200dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/toolbar"
         android:layout_centerInParent="true" />
 
-    <ImageView
-        android:id="@+id/coverArtView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_alignBottom="@+id/videoView1"
         android:layout_alignLeft="@+id/videoView1"
         android:layout_alignRight="@+id/videoView1"
         android:layout_alignTop="@+id/videoView1"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/coverArtView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/play_circle"
+            android:src="@drawable/ic_play_circle_white_80dp"
+            android:layout_centerInParent="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/controllers"
@@ -57,6 +70,7 @@
         android:layout_alignLeft="@+id/videoView1"
         android:layout_alignRight="@+id/videoView1"
         android:layout_alignTop="@+id/videoView1"
+        android:visibility="visible"
         android:background="@drawable/player_bg_gradient_dark" >
 
         <ProgressBar
@@ -68,6 +82,7 @@
             android:visibility="gone" />
 
         <RelativeLayout
+            android:id="@+id/control_bar"
             android:layout_width="fill_parent"
             android:layout_height="45dp"
             android:layout_alignParentBottom="true" >
@@ -157,7 +172,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
-        android:background="@drawable/ab_transparent_democastoverlay"
+        android:background="?attr/colorPrimary"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 

@@ -12,6 +12,7 @@ Here is the list of other reference apps:
 ## Dependencies
 * CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
 * ShowcaseView: can be downloaded at https://github.com/amlcurran/ShowcaseView (see change list 1.2 for details)
+* android-advancedrecyclerview: See https://github.com/h6ah4i/android-advancedrecyclerview
 
 ## Setup Instructions
 * Get a Chromecast device and set it up
@@ -51,6 +52,13 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+1.7
+ * Adapting to CCL 2.1 and adding support for Autoplay and Queueing. Note: in order to see the full capabilities for the
+ autoplay, both on the sender and on the receiver, you would need to use the [reference receiver] (https://github.com/googlecast/Cast-Player-Sample)
+  that is part of the samples.
+ * A new page for handling queue has been added where you can reorder, delete, pause or play any of the queue items.
+ * Some bug fixes.
+
 1.6
  * Adapting to the CCL v2.0
  * Fixing some typos and minor issues

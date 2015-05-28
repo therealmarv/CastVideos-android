@@ -24,7 +24,7 @@ buildscript {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
     flatDir {
         dirs 'libs'
     }
@@ -61,4 +61,5 @@ dependencies {
     releaseCompile project(path: '..:CastCompanionLibrary', configuration: 'release')
     debugCompile project(path: '..:CastCompanionLibrary', configuration: 'debug')
     compile 'com.github.amlcurran.showcaseview:ShowCaseLibrary@aar'
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.6.1'
 }
