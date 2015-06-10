@@ -42,7 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -68,10 +68,9 @@ import com.androidquery.AQuery;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LocalPlayerActivity extends ActionBarActivity {
+public class LocalPlayerActivity extends AppCompatActivity {
 
     private static final String TAG = "LocalPlayerActivity";
-    private static final String DIALOG_TAG = "add-dialog";
     private VideoView mVideoView;
     private TextView mTitleView;
     private TextView mDescriptionView;
@@ -290,7 +289,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
                 switch (mLocation) {
                     case LOCAL:
                         mVideoView.start();
-                        if (!mCastManager.isConnecting() ) {
+                        if (!mCastManager.isConnecting()) {
                             Log.d(TAG, "Playing locally...");
                             mCastManager.clearPersistedConnectionInfo(
                                     VideoCastManager.CLEAR_SESSION);

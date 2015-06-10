@@ -29,7 +29,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
 import android.support.v7.widget.Toolbar;
@@ -42,7 +42,7 @@ import android.view.View;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
-public class VideoBrowserActivity extends ActionBarActivity {
+public class VideoBrowserActivity extends AppCompatActivity {
 
     private static final String TAG = "VideoBrowserActivity";
     private VideoCastManager mCastManager;
@@ -51,6 +51,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
     private MenuItem mediaRouteMenuItem;
     private boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private Toolbar mToolbar;
+
     /*
      * (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)

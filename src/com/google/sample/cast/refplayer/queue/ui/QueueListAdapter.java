@@ -152,7 +152,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
      */
     private void updateImageResource(ImageButton button) {
         int status = mCastManager.getPlaybackStatus();
-        switch(status) {
+        switch (status) {
             case MediaStatus.PLAYER_STATE_PLAYING:
                 button.setImageResource(sPauseResource);
                 break;
@@ -308,8 +308,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
         if (onCheckCanStartDrag(queueHolder, x, y)) {
             return RecyclerViewSwipeManager.REACTION_CAN_NOT_SWIPE_BOTH;
         } else {
-            return //RecyclerViewSwipeManager.REACTION_CAN_SWIPE_LEFT;
-                   RecyclerViewSwipeManager.REACTION_CAN_SWIPE_RIGHT;
+            return RecyclerViewSwipeManager.REACTION_CAN_SWIPE_RIGHT;
         }
     }
 

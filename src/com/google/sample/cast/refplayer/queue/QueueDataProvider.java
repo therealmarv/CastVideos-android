@@ -83,6 +83,7 @@ public class QueueDataProvider {
                         mQueue = new CopyOnWriteArrayList<>(queueItems);
                         mDetachedQueue = false;
                     } else {
+                        mQueue = new CopyOnWriteArrayList<>();
                         mDetachedQueue = true;
                     }
                 }

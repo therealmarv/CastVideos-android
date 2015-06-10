@@ -23,7 +23,6 @@ import com.google.sample.cast.refplayer.R;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,7 +109,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             View menu = parent.findViewById(R.id.menu);
             View textContainer = parent.findViewById(R.id.text_container);
             AQuery aQuery = new AQuery(parent);
-            return new ViewHolder(parent, imgView, textContainer, titleView, descriptionView, menu, aQuery);
+            return new ViewHolder(parent, imgView, textContainer, titleView, descriptionView, menu,
+                    aQuery);
         }
 
         private ViewHolder(View parent, ImageView imgView, View textContainer, TextView titleView,
@@ -153,6 +153,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     }
 
     public interface ItemClickListener {
+
         void itemClicked(View v, MediaInfo item, int position);
     }
 

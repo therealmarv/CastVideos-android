@@ -140,4 +140,4 @@ public class VideoBrowserFragment extends Fragment implements VideoListAdapter.I
         mAdapter.setData(null);
     }
 
-    }
+}

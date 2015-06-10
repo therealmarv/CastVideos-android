@@ -25,7 +25,7 @@ import com.google.sample.cast.refplayer.settings.CastPreference;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * An activity to show the queue list
  */
-public class QueueListViewActivity extends ActionBarActivity {
+public class QueueListViewActivity extends AppCompatActivity {
 
     private static final String FRAGMENT_LIST_VIEW = "list view";
     private static final String TAG = "QueueListViewActivity";
@@ -62,7 +62,7 @@ public class QueueListViewActivity extends ActionBarActivity {
             @Override
             public void onMediaQueueUpdated(List<MediaQueueItem> queueItems, MediaQueueItem item,
                     int repeatMode, boolean shuffle) {
-                if (queueItems == null) {
+                if (queueItems == null || queueItems.isEmpty()) {
                     mEmpty.setVisibility(View.VISIBLE);
                 } else {
                     mEmpty.setVisibility(View.GONE);
