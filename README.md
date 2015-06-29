@@ -52,6 +52,13 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+2.1
+ * Moving media assets to HLS format: all the videos have been refomratted to HLS to enable more exotic features such as pre-loading. The receiver
+ has also been upated so that the included App ID points to a receiver that includes the pre-loading UI appropriate for the pre-loading feature.
+ If the HLS format doesn't play locally on your phone or tablet, you may decide to switch back to the old media or you may even set things up so
+ that local playback uses the old mp4 media and remote playback uses the HLS content.
+ * A couple of bug fixes, including addressing a crash in the queue list page for GB devices.
+
 2.0
  * Adapting to CCL 2.1 and adding support for Autoplay and Queueing. Note: in order to see the full capabilities for the
  autoplay, both on the sender and on the receiver, you would need to use the [reference receiver] (https://github.com/googlecast/Cast-Player-Sample)

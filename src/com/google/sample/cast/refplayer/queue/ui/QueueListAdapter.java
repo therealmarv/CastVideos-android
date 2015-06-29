@@ -57,7 +57,6 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
     private static final int sPauseResource = R.drawable.ic_pause_grey600_48dp;
     private static final int sDragHandlerDarkResource = R.drawable.ic_drag_updown_grey_24dp;
     private static final int sDragHandlerLightResource = R.drawable.ic_drag_updown_white_24dp;
-    private static Context sContext;
     private static int sWhiteColor;
     private static int sBlackColor;
     private static int sYellowColor;
@@ -138,12 +137,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
                 holder.updateControlsStatus(QueueHolder.ControlStatus.NONE);
                 holder.mPlayPause.setVisibility(View.GONE);
             }
-            //holder.mContainer.setBackgroundResource(bgResId);
         }
-
-        // set swiping properties
-        //holder.setSwipeItemSlideAmount(0);
-        //item.isPinnedToSwipeLeft() ? RecyclerViewSwipeManager.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
 
     }
 
@@ -170,7 +164,6 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
     }
 
     public QueueListAdapter(Context context) {
-        sContext = context;
         mCastManager = VideoCastManager.getInstance();
         mProvider = QueueDataProvider.getInstance();
         mProvider.setOnQueueDataChangedListener(new QueueDataProvider.OnQueueDataChangedListener() {
@@ -190,10 +183,10 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
             }
         };
         setHasStableIds(true);
-        sWhiteColor = sContext.getResources().getColor(R.color.white);
-        sGreyColor = sContext.getResources().getColor(android.R.color.secondary_text_light);
-        sBlackColor = sContext.getResources().getColor(R.color.black);
-        sYellowColor = sContext.getResources().getColor(R.color.ccl_mini_upcoming_upnext_color);
+        sWhiteColor = context.getResources().getColor(R.color.white);
+        sGreyColor = context.getResources().getColor(android.R.color.secondary_text_light);
+        sBlackColor = context.getResources().getColor(R.color.black);
+        sYellowColor = context.getResources().getColor(R.color.ccl_mini_upcoming_upnext_color);
     }
 
     private void onItemViewClick(View v) {
@@ -204,6 +197,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
 
     public static class QueueHolder extends AbstractDraggableSwipeableItemViewHolder {
 
+        private Context mContext;
         private final ImageButton mPlayPause;
         private View mControls;
         private View mUpcomingControls;
@@ -221,6 +215,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
 
         public QueueHolder(View v) {
             super(v);
+            mContext = v.getContext();
             mContainer = (ViewGroup) v.findViewById(R.id.container);
             mDragHandle = (ImageView) v.findViewById(R.id.drag_handle);
             mTitleView = (TextView) v.findViewById(R.id.textView1);
@@ -240,8 +235,8 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
 
         private void updateControlsStatus(ControlStatus status) {
             int bgResId = R.drawable.bg_item_normal_state;
-            mTitleView.setTextAppearance(sContext, R.style.Base_TextAppearance_AppCompat_Subhead);
-            mDescriptionView.setTextAppearance(sContext,
+            mTitleView.setTextAppearance(mContext, R.style.Base_TextAppearance_AppCompat_Subhead);
+            mDescriptionView.setTextAppearance(mContext,
                     R.style.Base_TextAppearance_AppCompat_Caption);
             mTitleView.setTextColor(sBlackColor);
             mDescriptionView.setTextColor(sGreyColor);
@@ -259,9 +254,11 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
                     mUpcomingControls.setVisibility(View.VISIBLE);
                     mDragHandle.setImageResource(sDragHandlerLightResource);
                     bgResId = R.drawable.bg_item_upcoming_state;
-                    mTitleView.setTextAppearance(sContext,
+                    mTitleView.setTextAppearance(mContext,
+                            R.style.TextAppearance_AppCompat_Small_Inverse);
+                    mTitleView.setTextAppearance(mTitleView.getContext(),
                             R.style.Base_TextAppearance_AppCompat_Subhead_Inverse);
-                    mDescriptionView.setTextAppearance(sContext,
+                    mDescriptionView.setTextAppearance(mContext,
                             R.style.Base_TextAppearance_AppCompat_Caption);
                     mTitleView.setTextColor(sWhiteColor);
                     mDescriptionView.setTextColor(sYellowColor);

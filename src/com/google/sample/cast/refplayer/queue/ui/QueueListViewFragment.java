@@ -17,12 +17,12 @@
 package com.google.sample.cast.refplayer.queue.ui;
 
 import com.google.android.gms.cast.MediaQueueItem;
-import com.google.android.gms.cast.MediaStatus;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
+import com.google.sample.cast.refplayer.CastApplication;
 import com.google.sample.cast.refplayer.R;
 import com.google.sample.cast.refplayer.queue.QueueDataProvider;
 
@@ -174,9 +174,10 @@ public class QueueListViewFragment extends Fragment {
 
                 int currentPosition = mProvider.getPositionByItemId(item.getItemId());
                 MediaQueueItem[] items = Utils.rebuildQueue(mProvider.getItems());
-
-                mCastManager.queueLoad(items, currentPosition, MediaStatus.REPEAT_MODE_REPEAT_OFF,
-                        null);
+                ((CastApplication) getActivity().getApplicationContext())
+                        .loadQueue(items, currentPosition);
+                // temporary mCastManager.queueLoad(items, currentPosition, MediaStatus.REPEAT_MODE_REPEAT_OFF,
+                // temporary        null);
             } else {
                 int currentItemId = mProvider.getCurrentItemId();
                 if (currentItemId == item.getItemId()) {

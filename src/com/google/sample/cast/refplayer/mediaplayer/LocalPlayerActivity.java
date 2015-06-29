@@ -105,7 +105,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     /*
      * indicates whether we are doing a local or a remote playback
      */
-    public static enum PlaybackLocation {
+    public enum PlaybackLocation {
         LOCAL,
         REMOTE;
     }
@@ -183,9 +183,11 @@ public class LocalPlayerActivity extends AppCompatActivity {
                         }
                         return;
                     } else {
+                        mPlaybackState = PlaybackState.IDLE;
                         updatePlaybackLocation(PlaybackLocation.REMOTE);
                     }
                 }
+                updatePlayButton(mPlaybackState);
                 invalidateOptionsMenu();
             }
 
@@ -239,7 +241,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void updatePlaybackLocation(PlaybackLocation location) {
-        this.mLocation = location;
+        mLocation = location;
         if (location == PlaybackLocation.LOCAL) {
             if (mPlaybackState == PlaybackState.PLAYING ||
                     mPlaybackState == PlaybackState.BUFFERING) {
@@ -251,12 +253,11 @@ public class LocalPlayerActivity extends AppCompatActivity {
                         getImageUrl(mSelectedMedia, 0));
             }
 
-            //getSupportActionBar().setTitle("");
         } else {
             stopControllersTimer();
             setCoverArtStatus(com.google.android.libraries.cast.companionlibrary.utils.Utils.
                     getImageUrl(mSelectedMedia, 0));
-            updateControllersVisibility(true);
+            updateControllersVisibility(false);
         }
     }
 
@@ -333,8 +334,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
                         try {
                             mCastManager.checkConnectivity();
                             Utils.showQueuePopup(this, mPlayCircle, mSelectedMedia);
-                            //loadRemoteMedia(0, true);
-                            //finish();
                         } catch (Exception e) {
                             Utils.handleException(LocalPlayerActivity.this, e);
                             return;
@@ -406,14 +405,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void adjustActionbarVisibility() {
-        if (!Utils.isOrientationPortrait(this)) {
-            getSupportActionBar().hide();
-        } else {
-            getSupportActionBar().show();
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -470,6 +461,11 @@ public class LocalPlayerActivity extends AppCompatActivity {
         mCastManager.addVideoCastConsumer(mCastConsumer);
         mMini.setOnMiniControllerChangedListener(mCastManager);
         mCastManager.incrementUiCounter();
+        if (mCastManager.isConnected()) {
+            updatePlaybackLocation(PlaybackLocation.REMOTE);
+        } else {
+            updatePlaybackLocation(PlaybackLocation.LOCAL);
+        }
         super.onResume();
     }
 
@@ -622,15 +618,16 @@ public class LocalPlayerActivity extends AppCompatActivity {
 
     private void updatePlayButton(PlaybackState state) {
         Log.d(TAG, "Controls: PlayBackState: " + state);
-        mPlayCircle.setVisibility(View.GONE);
         boolean isConnected = mCastManager.isConnected() || mCastManager.isConnecting();
         mControllers.setVisibility(isConnected ? View.GONE : View.VISIBLE);
+        mPlayCircle.setVisibility(isConnected ? View.GONE : View.VISIBLE);
         switch (state) {
             case PLAYING:
                 mLoading.setVisibility(View.INVISIBLE);
                 mPlayPause.setVisibility(View.VISIBLE);
                 mPlayPause.setImageDrawable(
                         getResources().getDrawable(R.drawable.ic_av_pause_dark));
+                mPlayCircle.setVisibility(isConnected ? View.VISIBLE : View.GONE);
                 break;
             case IDLE:
                 mPlayCircle.setVisibility(View.VISIBLE);
@@ -643,6 +640,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 mPlayPause.setVisibility(View.VISIBLE);
                 mPlayPause.setImageDrawable(
                         getResources().getDrawable(R.drawable.ic_av_play_dark));
+                mPlayCircle.setVisibility(isConnected ? View.VISIBLE : View.GONE);
                 break;
             case BUFFERING:
                 mPlayPause.setVisibility(View.INVISIBLE);

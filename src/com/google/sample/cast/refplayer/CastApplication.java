@@ -16,14 +16,17 @@
 
 package com.google.sample.cast.refplayer;
 
+import com.google.android.gms.cast.CastStatusCodes;
 import com.google.android.gms.cast.MediaQueueItem;
+import com.google.android.gms.cast.MediaStatus;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions
+        .TransientNetworkDisconnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
 
 import android.app.Application;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The {@link Application} for this demo application.
@@ -34,13 +37,6 @@ public class CastApplication extends Application {
     private static String APPLICATION_ID;
     public static final double VOLUME_INCREMENT = 0.05;
     public static final int PRELOAD_TIME_S = 20;
-    private static List<MediaQueueItem> mQueue = new ArrayList<>();
-    public static final String EXTRA_MEDIA = "media";
-
-//    protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(base);
-//        MultiDex.install(this);
-//    }
 
     /*
      * (non-Javadoc)
@@ -60,13 +56,29 @@ public class CastApplication extends Application {
                         VideoCastManager.FEATURE_WIFI_RECONNECT |
                         VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                         VideoCastManager.FEATURE_DEBUGGING);
+
     }
 
-    public static List<MediaQueueItem> getQueue() {
-        return mQueue;
+    /**
+     * Loading queue items. The only reason we are using this instead of using the VideoCastManager
+     * directly is to get around an issue on receiver side for HLS + VTT for a queue; this will be
+     * addressed soon and the following workaround will be removed.
+     */
+    public void loadQueue(MediaQueueItem[] items, int startIndex)
+            throws TransientNetworkDisconnectionException, NoConnectionException {
+        final VideoCastManager castManager = VideoCastManager.getInstance();
+        castManager.addVideoCastConsumer(new VideoCastConsumerImpl() {
+            @Override
+            public void onMediaQueueOperationResult(int operationId, int statusCode) {
+                if (operationId == VideoCastManager.QUEUE_OPERATION_LOAD) {
+                    if (statusCode == CastStatusCodes.SUCCESS) {
+                        castManager.setActiveTrackIds(new long[]{});
+                    }
+                    castManager.removeVideoCastConsumer(this);
+                }
+            }
+        });
+        castManager.queueLoad(items, startIndex, MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
     }
 
-    public static void addToQueue(MediaQueueItem item) {
-        mQueue.add(item);
-    }
 }

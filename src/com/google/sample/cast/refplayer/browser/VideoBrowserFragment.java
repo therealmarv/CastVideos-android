@@ -50,7 +50,7 @@ public class VideoBrowserFragment extends Fragment implements VideoListAdapter.I
 
     private static final String TAG = "VideoBrowserFragment";
     private static final String CATALOG_URL =
-            "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/d.json";
+            "http://commondatastorage.googleapis.com/gtv-videos-bucket/hls/e.json";
     private RecyclerView mRecyclerView;
     private VideoListAdapter mAdapter;
     private View mEmptyView;

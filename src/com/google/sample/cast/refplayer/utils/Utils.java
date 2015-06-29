@@ -18,7 +18,6 @@ package com.google.sample.cast.refplayer.utils;
 
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaQueueItem;
-import com.google.android.gms.cast.MediaStatus;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
@@ -61,8 +60,6 @@ public class Utils {
     /**
      * Returns the screen/display size
      *
-     * @param ctx
-     * @return
      */
     public static Point getDisplaySize(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -82,9 +79,6 @@ public class Utils {
 
     /**
      * Shows an error dialog with a given text message.
-     *
-     * @param context
-     * @param errorString
      */
     public static final void showErrorDialog(Context context, String errorString) {
         new AlertDialog.Builder(context).setTitle(R.string.error)
@@ -101,9 +95,6 @@ public class Utils {
 
     /**
      * Shows an error dialog with a text provided by a resource ID
-     *
-     * @param context
-     * @param resourceId
      */
     public static final void showErrorDialog(Context context, int resourceId) {
         new AlertDialog.Builder(context).setTitle(R.string.error)
@@ -120,9 +111,6 @@ public class Utils {
 
     /**
      * Shows an "Oops" error dialog with a text provided by a resource ID
-     *
-     * @param context
-     * @param resourceId
      */
     public static final void showOopsDialog(Context context, int resourceId) {
         new AlertDialog.Builder(context).setTitle(R.string.oops)
@@ -150,9 +138,6 @@ public class Utils {
      * <li><code>R.string.connection_lost</code></li>
      * <li><code>R.string.failed_to_perform_action</code></li>
      * </ul>
-     *
-     * @param context
-     * @param e
      */
     public static void handleException(Context context, Exception e) {
         int resourceId = 0;
@@ -179,9 +164,6 @@ public class Utils {
 
     /**
      * Gets the version of app.
-     *
-     * @param context
-     * @return
      */
     public static String getAppVersionName(Context context) {
         String versionString = null;
@@ -197,9 +179,6 @@ public class Utils {
 
     /**
      * Shows a (long) toast
-     *
-     * @param context
-     * @param msg
      */
     public static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
@@ -207,9 +186,6 @@ public class Utils {
 
     /**
      * Shows a (long) toast.
-     *
-     * @param context
-     * @param resourceId
      */
     public static void showToast(Context context, int resourceId) {
         Toast.makeText(context, context.getString(resourceId), Toast.LENGTH_LONG).show();
@@ -226,6 +202,10 @@ public class Utils {
         return (x >= left) && (x <= right) && (y >= top) && (y <= bottom);
     }
 
+    /**
+     * Show a popup to select whether the selected item should play immediately, be added to the
+     * end of queue or be added to the queue right after the current item.
+     */
     public static void showQueuePopup(final Context context, View view, final MediaInfo mediaInfo) {
         final VideoCastManager castManager = VideoCastManager.getInstance();
         final QueueDataProvider provider = QueueDataProvider.getInstance();
@@ -254,17 +234,20 @@ public class Utils {
                                 MediaQueueItem[] items = com.google.android.libraries.cast
                                         .companionlibrary.utils.Utils
                                         .rebuildQueueAndAppend(provider.getItems(), queueItem);
-
-                                castManager.queueLoad(items, provider.getCount(),
-                                        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
+                                // temporary castManager.queueLoad(items, provider.getCount(),
+                                // temporary        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
+                                ((CastApplication) context.getApplicationContext())
+                                        .loadQueue(items, provider.getCount());
                                 break;
                             default:
                                 return false;
                         }
                     } else {
                         if (provider.getCount() == 0) {
-                            castManager.queueLoad(newItemArray, 0,
-                                    MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
+                            // temporary castManager.queueLoad(newItemArray, 0,
+                            // temporary        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
+                            ((CastApplication) context.getApplicationContext())
+                                    .loadQueue(newItemArray, 0);
                         } else {
                             int currentId = provider.getCurrentItemId();
                             switch (menuItem.getItemId()) {
