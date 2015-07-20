@@ -24,6 +24,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.google.sample.cast.refplayer.CastApplication;
 import com.google.sample.cast.refplayer.R;
+import com.google.sample.cast.refplayer.browser.VideoProvider;
 import com.google.sample.cast.refplayer.queue.ui.QueueListViewActivity;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 import com.google.sample.cast.refplayer.utils.Utils;
@@ -693,7 +694,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
             mVideoView.invalidate();
         } else {
             MediaMetadata mm = mSelectedMedia.getMetadata();
-            mDescriptionView.setText(mm.getString(MediaMetadata.KEY_STUDIO));
+            mDescriptionView.setText(mSelectedMedia.getCustomData().optString(
+                    VideoProvider.KEY_DESCRIPTION));
             mTitleView.setText(mm.getString(MediaMetadata.KEY_TITLE));
             mAuthorView.setText(mm.getString(MediaMetadata.KEY_SUBTITLE));
             mDescriptionView.setVisibility(View.VISIBLE);

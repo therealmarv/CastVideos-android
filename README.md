@@ -23,7 +23,7 @@ to have your own ID.
 * Setup the project dependencies
   * For Eclipse: you need to setup the above dependencies manually. For ShowcaseView Library, see the additional comments
   below in the Change List 1.2.
-  * For Android Studio: make sure you are running at least version 0.9.1 (it may work on earlier versions). Dependencies are
+  * For Android Studio: make sure you are running the latest version (it may work on earlier versions). Dependencies are
    setup in the build.gradle file and the settings.gradle; it assumes you have cloned the CastCompanionLibrary-android project
    into a parallel project named "CastCompanionLibrary". If you want to change the name, make sure it gets updated in both
    settings.gradle and build.gradle. Quick steps to clone and compile the app from command line (on a Linux or Mac) are:
@@ -52,8 +52,12 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+2.2
+ * Updating media assets to include three different types: mp4, HLS and DASH. Developers can decide which type of content
+ they want to use by updating the VideoProvider.TARGET_FORMAT field; it is currently set to HLS. The HLS content has been
+ recreated to provide a better set of segments.
 2.1
- * Moving media assets to HLS format: all the videos have been refomratted to HLS to enable more exotic features such as pre-loading. The receiver
+ * Moving media assets to HLS format: all the videos have been reformatted to HLS to enable more exotic features such as pre-loading. The receiver
  has also been upated so that the included App ID points to a receiver that includes the pre-loading UI appropriate for the pre-loading feature.
  If the HLS format doesn't play locally on your phone or tablet, you may decide to switch back to the old media or you may even set things up so
  that local playback uses the old mp4 media and remote playback uses the HLS content.
