@@ -24,6 +24,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions
         .TransientNetworkDisconnectionException;
+import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastController;
 import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
 
 import android.app.Application;
@@ -57,6 +58,12 @@ public class CastApplication extends Application {
                         VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                         VideoCastManager.FEATURE_DEBUGGING);
 
+        // this is the default behavior but is mentioned to make it clear that it is configurable.
+        VideoCastManager.getInstance().setNextPreviousVisibilityPolicy(
+                VideoCastController.NEXT_PREV_VISIBILITY_POLICY_DISABLED);
+
+        // this is the default behavior but is mentioned to make it clear that it is configurable.
+        VideoCastManager.getInstance().setCastControllerImmersive(true);
     }
 
     /**

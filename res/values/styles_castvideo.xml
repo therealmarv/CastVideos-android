@@ -27,6 +27,10 @@
         <!--item name="android:seekBarStyle">@style/YellowSeekBar</item-->
     </style>
 
+    <style name="Theme.CastVideosDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
     <style name="YellowSeekBar" parent="android:Widget.SeekBar">
         <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
         <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
