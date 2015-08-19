@@ -82,7 +82,7 @@ public class VideoProvider {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     urlConnection.getInputStream(), "iso-8859-1"), 1024);
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
@@ -108,7 +108,7 @@ public class VideoProvider {
             return mediaList;
         }
         Map<String, String> urlPrefixMap = new HashMap<>();
-        mediaList = new ArrayList<MediaInfo>();
+        mediaList = new ArrayList<>();
         JSONObject jsonObj = new VideoProvider().parseUrl(url);
         JSONArray categories = jsonObj.getJSONArray(TAG_CATEGORIES);
         if (null != categories) {
@@ -189,7 +189,7 @@ public class VideoProvider {
             jsonObj = new JSONObject();
             jsonObj.put(KEY_DESCRIPTION, subTitle);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to add description to the json object", e);
         }
 
         return new MediaInfo.Builder(url)

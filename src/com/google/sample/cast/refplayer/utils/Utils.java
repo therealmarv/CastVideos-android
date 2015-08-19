@@ -80,7 +80,7 @@ public class Utils {
     /**
      * Shows an error dialog with a given text message.
      */
-    public static final void showErrorDialog(Context context, String errorString) {
+    public static void showErrorDialog(Context context, String errorString) {
         new AlertDialog.Builder(context).setTitle(R.string.error)
                 .setMessage(errorString)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -94,25 +94,9 @@ public class Utils {
     }
 
     /**
-     * Shows an error dialog with a text provided by a resource ID
-     */
-    public static final void showErrorDialog(Context context, int resourceId) {
-        new AlertDialog.Builder(context).setTitle(R.string.error)
-                .setMessage(context.getString(resourceId))
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    /**
      * Shows an "Oops" error dialog with a text provided by a resource ID
      */
-    public static final void showOopsDialog(Context context, int resourceId) {
+    public static void showOopsDialog(Context context, int resourceId) {
         new AlertDialog.Builder(context).setTitle(R.string.oops)
                 .setMessage(context.getString(resourceId))
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -140,7 +124,7 @@ public class Utils {
      * </ul>
      */
     public static void handleException(Context context, Exception e) {
-        int resourceId = 0;
+        int resourceId;
         if (e instanceof TransientNetworkDisconnectionException) {
             // temporary loss of connectivity
             resourceId = R.string.connection_lost_retry;
@@ -157,9 +141,7 @@ public class Utils {
             // well, who knows!
             resourceId = R.string.failed_to_perform_action;
         }
-        if (resourceId > 0) {
-            com.google.sample.cast.refplayer.utils.Utils.showOopsDialog(context, resourceId);
-        }
+        com.google.sample.cast.refplayer.utils.Utils.showOopsDialog(context, resourceId);
     }
 
     /**
@@ -175,13 +157,6 @@ public class Utils {
             // do nothing
         }
         return versionString;
-    }
-
-    /**
-     * Shows a (long) toast
-     */
-    public static void showToast(Context context, String msg) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
     /**

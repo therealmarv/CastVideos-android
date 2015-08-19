@@ -94,23 +94,6 @@ public class QueueListViewActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    /**
-     * This method will be called when a list item is removed
-     *
-     * @param position The position of the item within data set
-     */
-    public void onItemRemoved(int position) {
-
-    }
-
-    /**
-     * This method will be called when a list item is clicked
-     *
-     * @param position The position of the item within data set
-     */
-    public void onItemClicked(int position) {
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

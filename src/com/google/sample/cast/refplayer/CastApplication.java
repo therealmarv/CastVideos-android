@@ -34,8 +34,6 @@ import android.app.Application;
  */
 public class CastApplication extends Application {
 
-    private static final String TAG = "CastApplication";
-    private static String APPLICATION_ID;
     public static final double VOLUME_INCREMENT = 0.05;
     public static final int PRELOAD_TIME_S = 20;
 
@@ -46,11 +44,11 @@ public class CastApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        APPLICATION_ID = getString(R.string.app_id);
+        String applicationId = getString(R.string.app_id);
 
         // initialize VideoCastManager
         VideoCastManager.
-                initialize(this, APPLICATION_ID, VideoCastControllerActivity.class, null).
+                initialize(this, applicationId, VideoCastControllerActivity.class, null).
                 setVolumeStep(VOLUME_INCREMENT).
                 enableFeatures(VideoCastManager.FEATURE_NOTIFICATION |
                         VideoCastManager.FEATURE_LOCKSCREEN |

@@ -35,9 +35,7 @@ public class CastPreference extends PreferenceActivity
     public static final String FTU_SHOWN_KEY = "ftu_shown";
     public static final String VOLUME_SELECTION_KEY = "volume_target";
     private ListPreference mVolumeListPreference;
-    private SharedPreferences mPrefs;
     private VideoCastManager mCastManager;
-    boolean mStopOnExit;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -46,13 +44,13 @@ public class CastPreference extends PreferenceActivity
         addPreferencesFromResource(R.xml.application_preference);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mCastManager = VideoCastManager.getInstance();
 
         /* Volume settings */
         mVolumeListPreference = (ListPreference) getPreferenceScreen()
                 .findPreference(VOLUME_SELECTION_KEY);
-        String volValue = mPrefs.getString(
+        String volValue = prefs.getString(
                 VOLUME_SELECTION_KEY, getString(R.string.prefs_volume_default));
         String volSummary = getResources().getString(R.string.prefs_volume_title_summary, volValue);
         mVolumeListPreference.setSummary(volSummary);
@@ -79,7 +77,7 @@ public class CastPreference extends PreferenceActivity
 
     public static void setFtuShown(Context ctx) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        sharedPref.edit().putBoolean(FTU_SHOWN_KEY, true).commit();
+        sharedPref.edit().putBoolean(FTU_SHOWN_KEY, true).apply();
     }
 
     @Override

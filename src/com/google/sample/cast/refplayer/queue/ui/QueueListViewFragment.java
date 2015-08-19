@@ -55,7 +55,6 @@ public class QueueListViewFragment extends Fragment {
     private static final String TAG = "QueueListViewFragment";
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
@@ -133,8 +132,6 @@ public class QueueListViewFragment extends Fragment {
                 }
             }
         });
-
-        mAdapter = myItemAdapter;
 
         mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(myItemAdapter);
         mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);
@@ -225,7 +222,6 @@ public class QueueListViewFragment extends Fragment {
             WrapperAdapterUtils.releaseAll(mWrappedAdapter);
             mWrappedAdapter = null;
         }
-        mAdapter = null;
         mLayoutManager = null;
 
         super.onDestroyView();

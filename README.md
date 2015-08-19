@@ -50,6 +50,8 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+2.3.1
+ * Some cleanup
 2.3
  * Some minor bug fixes
  * Changing the them defined for the VideoCastControllerActivity

@@ -40,7 +40,6 @@ import java.util.List;
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.ViewHolder> {
 
     private static final float mAspectRatio = 9f / 16f;
-    private static final String TAG = "VideoListAdapter";
     private final ItemClickListener mClickListener;
     private final VideoCastManager mCastManager;
     private List<MediaInfo> videos;

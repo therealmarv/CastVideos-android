@@ -89,11 +89,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private PlaybackLocation mLocation;
     private PlaybackState mPlaybackState;
     private final Handler mHandler = new Handler();
-    private Point mDisplaySize;
     private final float mAspectRatio = 72f / 128;
     private AQuery mAquery;
     private MediaInfo mSelectedMedia;
-    private boolean mShouldStartPlayback;
     private boolean mControllersVisible;
     private int mDuration;
     private MiniController mMini;
@@ -101,21 +99,20 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private VideoCastConsumerImpl mCastConsumer;
     private TextView mAuthorView;
     private ImageButton mPlayCircle;
-    private Toolbar mToolbar;
 
     /*
      * indicates whether we are doing a local or a remote playback
      */
     public enum PlaybackLocation {
         LOCAL,
-        REMOTE;
+        REMOTE
     }
 
     /*
      * List of various states that we can be in
      */
-    public static enum PlaybackState {
-        PLAYING, PAUSED, BUFFERING, IDLE;
+    public enum PlaybackState {
+        PLAYING, PAUSED, BUFFERING, IDLE
     }
 
     @Override
@@ -134,11 +131,11 @@ public class LocalPlayerActivity extends AppCompatActivity {
             mSelectedMedia = com.google.android.libraries.cast.companionlibrary.utils.Utils
                     .bundleToMediaInfo(getIntent().getBundleExtra("media"));
             setupActionBar();
-            mShouldStartPlayback = b.getBoolean("shouldStart");
+            boolean shouldStartPlayback = b.getBoolean("shouldStart");
             int startPosition = b.getInt("startPosition", 0);
             mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
             Log.d(TAG, "Setting url of the VideoView to: " + mSelectedMedia.getContentId());
-            if (mShouldStartPlayback) {
+            if (shouldStartPlayback) {
                 // this will be the case only if we are coming from the
                 // CastControllerActivity by disconnecting from a device
                 mPlaybackState = PlaybackState.PLAYING;
@@ -493,9 +490,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
 
                 @Override
                 public void run() {
-                    int currentPos = 0;
                     if (mLocation == PlaybackLocation.LOCAL) {
-                        currentPos = mVideoView.getCurrentPosition();
+                        int currentPos = mVideoView.getCurrentPosition();
                         updateSeekbar(currentPos, mDuration);
                     }
                 }
@@ -510,7 +506,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.e(TAG, "OnErrorListener.onError(): VideoView encountered an " +
                         "error, what: " + what + ", extra: " + extra);
-                String msg = "";
+                String msg;
                 if (extra == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
                     msg = getString(R.string.video_error_media_load_timeout);
                 } else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
@@ -681,14 +677,15 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void updateMetadata(boolean visible) {
+        Point displaySize;
         if (!visible) {
             mDescriptionView.setVisibility(View.GONE);
             mTitleView.setVisibility(View.GONE);
             mAuthorView.setVisibility(View.GONE);
-            mDisplaySize = Utils.getDisplaySize(this);
+            displaySize = Utils.getDisplaySize(this);
             RelativeLayout.LayoutParams lp = new
-                    RelativeLayout.LayoutParams(mDisplaySize.x,
-                    mDisplaySize.y + getSupportActionBar().getHeight());
+                    RelativeLayout.LayoutParams(displaySize.x,
+                    displaySize.y + getSupportActionBar().getHeight());
             lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             mVideoView.setLayoutParams(lp);
             mVideoView.invalidate();
@@ -701,10 +698,10 @@ public class LocalPlayerActivity extends AppCompatActivity {
             mDescriptionView.setVisibility(View.VISIBLE);
             mTitleView.setVisibility(View.VISIBLE);
             mAuthorView.setVisibility(View.VISIBLE);
-            mDisplaySize = Utils.getDisplaySize(this);
+            displaySize = Utils.getDisplaySize(this);
             RelativeLayout.LayoutParams lp = new
-                    RelativeLayout.LayoutParams(mDisplaySize.x,
-                    (int) (mDisplaySize.x * mAspectRatio));
+                    RelativeLayout.LayoutParams(displaySize.x,
+                    (int) (displaySize.x * mAspectRatio));
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
             //lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             mVideoView.setLayoutParams(lp);
@@ -746,9 +743,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void setupActionBar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(mSelectedMedia.getMetadata().getString(MediaMetadata.KEY_TITLE));
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(mSelectedMedia.getMetadata().getString(MediaMetadata.KEY_TITLE));
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
