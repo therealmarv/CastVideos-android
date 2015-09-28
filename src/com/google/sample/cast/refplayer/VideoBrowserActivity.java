@@ -17,7 +17,6 @@
 package com.google.sample.cast.refplayer;
 
 import com.google.android.gms.cast.ApplicationMetadata;
-import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
@@ -117,11 +116,6 @@ public class VideoBrowserActivity extends AppCompatActivity {
                         }
                     }, 1000);
                 }
-            }
-
-            @Override
-            public void onDisconnectionReason(@BaseCastManager.DISCONNECT_REASON int reason) {
-                Log.d(TAG, "[test] Disconnected with reason: " + reason);
             }
         };
 
