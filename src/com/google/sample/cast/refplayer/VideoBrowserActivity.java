@@ -17,6 +17,7 @@
 package com.google.sample.cast.refplayer;
 
 import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
@@ -64,11 +65,6 @@ public class VideoBrowserActivity extends AppCompatActivity {
         setContentView(R.layout.video_browser);
 
         mCastManager = VideoCastManager.getInstance();
-
-        // -- Adding MiniController
-        mMini = (MiniController) findViewById(R.id.miniController1);
-        mCastManager.addMiniController(mMini);
-
         mCastConsumer = new VideoCastConsumerImpl() {
 
             @Override
@@ -122,10 +118,14 @@ public class VideoBrowserActivity extends AppCompatActivity {
                     }, 1000);
                 }
             }
+
+            @Override
+            public void onDisconnectionReason(@BaseCastManager.DISCONNECT_REASON int reason) {
+                Log.d(TAG, "[test] Disconnected with reason: " + reason);
+            }
         };
 
         setupActionBar();
-        mCastManager.reconnectSessionIfPossible();
     }
 
     private void setupActionBar() {
@@ -208,10 +208,6 @@ public class VideoBrowserActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy is called");
-        if (null != mCastManager) {
-            mMini.removeOnMiniControllerChangedListener(mCastManager);
-            mCastManager.removeMiniController(mMini);
-        }
         super.onDestroy();
     }
 

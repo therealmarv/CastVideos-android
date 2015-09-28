@@ -29,6 +29,8 @@ import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastC
 
 import android.app.Application;
 
+import java.util.Locale;
+
 /**
  * The {@link Application} for this demo application.
  */
@@ -53,12 +55,16 @@ public class CastApplication extends Application {
                 enableFeatures(VideoCastManager.FEATURE_NOTIFICATION |
                         VideoCastManager.FEATURE_LOCKSCREEN |
                         VideoCastManager.FEATURE_WIFI_RECONNECT |
+                        VideoCastManager.FEATURE_AUTO_RECONNECT |
                         VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                         VideoCastManager.FEATURE_DEBUGGING);
 
         // this is the default behavior but is mentioned to make it clear that it is configurable.
         VideoCastManager.getInstance().setNextPreviousVisibilityPolicy(
                 VideoCastController.NEXT_PREV_VISIBILITY_POLICY_DISABLED);
+
+        // this is to set the launch options, the following values are the default values
+        VideoCastManager.getInstance().setLaunchOptions(false, Locale.getDefault());
 
         // this is the default behavior but is mentioned to make it clear that it is configurable.
         VideoCastManager.getInstance().setCastControllerImmersive(true);

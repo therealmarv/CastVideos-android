@@ -21,7 +21,6 @@ import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.google.sample.cast.refplayer.CastApplication;
 import com.google.sample.cast.refplayer.R;
 import com.google.sample.cast.refplayer.browser.VideoProvider;
@@ -41,6 +40,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -94,7 +94,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private MediaInfo mSelectedMedia;
     private boolean mControllersVisible;
     private int mDuration;
-    private MiniController mMini;
     protected MediaInfo mRemoteMediaInformation;
     private VideoCastConsumerImpl mCastConsumer;
     private TextView mAuthorView;
@@ -123,7 +122,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
         loadViews();
         mCastManager = VideoCastManager.getInstance();
         setupControlsCallbacks();
-        setupMiniController();
         setupCastListener();
         // see what we need to play and were
         Bundle b = getIntent().getExtras();
@@ -231,11 +229,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
             }
 
         };
-    }
-
-    private void setupMiniController() {
-        mMini = (MiniController) findViewById(R.id.miniController1);
-        mCastManager.addMiniController(mMini);
     }
 
     private void updatePlaybackLocation(PlaybackLocation location) {
@@ -423,7 +416,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
             updatePlayButton(PlaybackState.PAUSED);
         }
         mCastManager.removeVideoCastConsumer(mCastConsumer);
-        mMini.removeOnMiniControllerChangedListener(mCastManager);
         mCastManager.decrementUiCounter();
     }
 
@@ -437,8 +429,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy() is called");
         if (null != mCastManager) {
-            mMini.removeOnMiniControllerChangedListener(mCastManager);
-            mCastManager.removeMiniController(mMini);
             mCastConsumer = null;
         }
         stopControllersTimer();
@@ -457,7 +447,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
         Log.d(TAG, "onResume() was called");
         mCastManager = VideoCastManager.getInstance();
         mCastManager.addVideoCastConsumer(mCastConsumer);
-        mMini.setOnMiniControllerChangedListener(mCastManager);
         mCastManager.incrementUiCounter();
         if (mCastManager.isConnected()) {
             updatePlaybackLocation(PlaybackLocation.REMOTE);
@@ -597,11 +586,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mCastManager.onDispatchVolumeKeyEvent(event, CastApplication.VOLUME_INCREMENT)) {
-            return true;
-        }
-        return super.dispatchKeyEvent(event);
+    public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
+        return mCastManager.onDispatchVolumeKeyEvent(event, CastApplication.VOLUME_INCREMENT)
+                || super.dispatchKeyEvent(event);
     }
 
     private void updateSeekbar(int position, int duration) {
