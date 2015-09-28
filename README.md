@@ -51,8 +51,8 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
 
 ## Change List
 2.4
- * Updated to use with CCL 2.5
- * Configured CCL to automatically set up the mini controllers and reconnection logic
+ * Updated to use CCL 2.5
+ * Using the new features in CCL to automatically set up the mini controllers and reconnection logic
 2.3.1
  * Some cleanup
 2.3
