@@ -16,6 +16,19 @@
 
 package com.google.sample.cast.refplayer.queue.ui;
 
+import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaQueueItem;
@@ -23,32 +36,15 @@ import com.google.android.gms.cast.MediaStatus;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.sample.cast.refplayer.R;
 import com.google.sample.cast.refplayer.queue.QueueDataProvider;
-import com.google.sample.cast.refplayer.utils.Utils;
-
-import android.content.Context;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 
 /**
- * A ListAdapter for showing queue items.
+ * An adapter to show the list of queue items.
  */
-public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.QueueHolder> implements
-        DraggableItemAdapter<QueueListAdapter.QueueHolder>,
-        SwipeableItemAdapter<QueueListAdapter.QueueHolder> {
+public class QueueListAdapter
+        extends RecyclerView.Adapter<QueueListAdapter.QueueItemViewHolder>
+        implements QueueItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     private static final String TAG = "QueueListAdapter";
     private final QueueDataProvider mProvider;
@@ -61,109 +57,13 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
     private static int sBlackColor;
     private static int sYellowColor;
     private static int sGreyColor;
+    private final OnStartDragListener mDragStartListener;
     private View.OnClickListener mItemViewOnClickListener;
     private static final float mAspectRatio = 1f;
     private EventListener mEventListener;
 
-    @Override
-    public QueueHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.queue_row, parent, false);
-        return new QueueHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(QueueHolder holder, int position) {
-        Log.d(TAG, "[upcoming] onBindViewHolder() for position: " + position);
-        final MediaQueueItem item = mProvider.getItem(position);
-        holder.mContainer.setTag(R.string.queue_tag_item, item);
-        holder.mPlayPause.setTag(R.string.queue_tag_item, item);
-        holder.mPlayUpcoming.setTag(R.string.queue_tag_item, item);
-        holder.mStopUpcoming.setTag(R.string.queue_tag_item, item);
-
-        // set listeners
-        holder.mContainer.setOnClickListener(mItemViewOnClickListener);
-        holder.mPlayPause.setOnClickListener(mItemViewOnClickListener);
-        holder.mPlayUpcoming.setOnClickListener(mItemViewOnClickListener);
-        holder.mStopUpcoming.setOnClickListener(mItemViewOnClickListener);
-
-        MediaInfo info = item.getMedia();
-        MediaMetadata metaData = info.getMetadata();
-        holder.mTitleView.setText(metaData.getString(MediaMetadata.KEY_TITLE));
-        holder.mDescriptionView.setText(metaData.getString(MediaMetadata.KEY_SUBTITLE));
-        AQuery aq = new AQuery(holder.itemView);
-        if (!metaData.getImages().isEmpty()) {
-            aq.id(holder.mImageView).width(64)
-                    .image(metaData.getImages().get(0).getUrl().toString(), true, true, 0,
-                            R.drawable.default_video, null, 0, mAspectRatio);
-        }
-
-        // set background resource (target view ID: container)
-        final int dragState = holder.getDragStateFlags();
-        final int swipeState = holder.getSwipeStateFlags();
-        int bgResId = (item == mProvider.getUpcomingItem()) ? R.drawable.bg_item_upcoming_state
-                : R.drawable.bg_item_normal_state;
-
-        if (((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_UPDATED) != 0) ||
-                ((swipeState & RecyclerViewSwipeManager.STATE_FLAG_IS_UPDATED) != 0)) {
-
-            if ((dragState & RecyclerViewDragDropManager.STATE_FLAG_IS_ACTIVE) != 0) {
-                bgResId = R.drawable.bg_item_dragging_active_state;
-            } else if ((dragState & RecyclerViewDragDropManager.STATE_FLAG_DRAGGING) != 0) {
-                bgResId = R.drawable.bg_item_dragging_state;
-            } else if ((swipeState & RecyclerViewSwipeManager.STATE_FLAG_IS_ACTIVE) != 0) {
-                bgResId = R.drawable.bg_item_swiping_active_state;
-            } else if ((swipeState & RecyclerViewSwipeManager.STATE_FLAG_SWIPING) != 0) {
-                bgResId = R.drawable.bg_item_swiping_state;
-            } else {
-                if (item == mProvider.getCurrentItem()) {
-                    holder.updateControlsStatus(QueueHolder.ControlStatus.CURRENT);
-                    updateImageResource(holder.mPlayPause);
-                } else if (item == mProvider.getUpcomingItem()) {
-                    holder.updateControlsStatus(QueueHolder.ControlStatus.UPCOMING);
-                } else {
-                    holder.updateControlsStatus(QueueHolder.ControlStatus.NONE);
-                    holder.mPlayPause.setVisibility(View.GONE);
-                }
-            }
-            holder.mContainer.setBackgroundResource(bgResId);
-        } else {
-            if (item == mProvider.getCurrentItem()) {
-                holder.updateControlsStatus(QueueHolder.ControlStatus.CURRENT);
-                updateImageResource(holder.mPlayPause);
-            } else if (item == mProvider.getUpcomingItem()) {
-                holder.updateControlsStatus(QueueHolder.ControlStatus.UPCOMING);
-            } else {
-                holder.updateControlsStatus(QueueHolder.ControlStatus.NONE);
-                holder.mPlayPause.setVisibility(View.GONE);
-            }
-        }
-
-    }
-
-    /**
-     * {@code null} means it should be hidden, otherwise returns the resource that should be used
-     */
-    private void updateImageResource(ImageButton button) {
-        int status = mCastManager.getPlaybackStatus();
-        switch (status) {
-            case MediaStatus.PLAYER_STATE_PLAYING:
-                button.setImageResource(sPauseResource);
-                break;
-            case MediaStatus.PLAYER_STATE_PAUSED:
-                button.setImageResource(sPlayResource);
-                break;
-            default:
-                button.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return QueueDataProvider.getInstance().getCount();
-    }
-
-    public QueueListAdapter(Context context) {
+    public QueueListAdapter(Context context, OnStartDragListener dragStartListener) {
+        mDragStartListener = dragStartListener;
         mCastManager = VideoCastManager.getInstance();
         mProvider = QueueDataProvider.getInstance();
         mProvider.setOnQueueDataChangedListener(new QueueDataProvider.OnQueueDataChangedListener() {
@@ -195,7 +95,102 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
         }
     }
 
-    public static class QueueHolder extends AbstractDraggableSwipeableItemViewHolder {
+    @Override
+    public void onItemDismiss(int position) {
+        mProvider.removeFromQueue(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition == toPosition) {
+            return false;
+        }
+        mProvider.moveItem(fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public QueueItemViewHolder onCreateViewHolder(ViewGroup parent,
+            int viewType) {
+        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        final View v = inflater.inflate(R.layout.queue_row, parent, false);
+        return new QueueItemViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(final QueueItemViewHolder holder, int position) {
+        Log.d(TAG, "[upcoming] onBindViewHolder() for position: " + position);
+        final MediaQueueItem item = mProvider.getItem(position);
+        holder.mContainer.setTag(R.string.queue_tag_item, item);
+        holder.mPlayPause.setTag(R.string.queue_tag_item, item);
+        holder.mPlayUpcoming.setTag(R.string.queue_tag_item, item);
+        holder.mStopUpcoming.setTag(R.string.queue_tag_item, item);
+
+        // set listeners
+        holder.mContainer.setOnClickListener(mItemViewOnClickListener);
+        holder.mPlayPause.setOnClickListener(mItemViewOnClickListener);
+        holder.mPlayUpcoming.setOnClickListener(mItemViewOnClickListener);
+        holder.mStopUpcoming.setOnClickListener(mItemViewOnClickListener);
+
+        MediaInfo info = item.getMedia();
+        MediaMetadata metaData = info.getMetadata();
+        holder.mTitleView.setText(metaData.getString(MediaMetadata.KEY_TITLE));
+        holder.mDescriptionView.setText(metaData.getString(MediaMetadata.KEY_SUBTITLE));
+        AQuery aq = new AQuery(holder.itemView);
+        if (!metaData.getImages().isEmpty()) {
+            aq.id(holder.mImageView).width(64)
+                    .image(metaData.getImages().get(0).getUrl().toString(), true, true, 0,
+                            R.drawable.default_video, null, 0, mAspectRatio);
+        }
+
+        holder.mDragHandle.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+
+        if (item == mProvider.getCurrentItem()) {
+            holder.updateControlsStatus(QueueItemViewHolder.ControlStatus.CURRENT);
+            updateImageResource(holder.mPlayPause);
+        } else if (item == mProvider.getUpcomingItem()) {
+            holder.updateControlsStatus(QueueItemViewHolder.ControlStatus.UPCOMING);
+        } else {
+            holder.updateControlsStatus(QueueItemViewHolder.ControlStatus.NONE);
+            holder.mPlayPause.setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
+     * {@code null} means it should be hidden, otherwise returns the resource that should be used
+     */
+    private void updateImageResource(ImageButton button) {
+        int status = mCastManager.getPlaybackStatus();
+        switch (status) {
+            case MediaStatus.PLAYER_STATE_PLAYING:
+                button.setImageResource(sPauseResource);
+                break;
+            case MediaStatus.PLAYER_STATE_PAUSED:
+                button.setImageResource(sPlayResource);
+                break;
+            default:
+                button.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return QueueDataProvider.getInstance().getCount();
+    }
+
+    public static class QueueItemViewHolder extends RecyclerView.ViewHolder implements
+            ItemTouchHelperViewHolder {
 
         private Context mContext;
         private final ImageButton mPlayPause;
@@ -209,28 +204,33 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
         public TextView mTitleView;
         public TextView mDescriptionView;
 
+        @Override
+        public void onItemSelected() {
+            // no-op
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
+        }
+
         private enum ControlStatus {
             CURRENT, UPCOMING, NONE
         }
 
-        public QueueHolder(View v) {
-            super(v);
-            mContext = v.getContext();
-            mContainer = (ViewGroup) v.findViewById(R.id.container);
-            mDragHandle = (ImageView) v.findViewById(R.id.drag_handle);
-            mTitleView = (TextView) v.findViewById(R.id.textView1);
-            mDescriptionView = (TextView) v.findViewById(R.id.textView2);
-            mImageView = (ImageView) v.findViewById(R.id.imageView1);
-            mPlayPause = (ImageButton) v.findViewById(R.id.play_pause);
-            mControls = v.findViewById(R.id.controls);
-            mUpcomingControls = v.findViewById(R.id.controls_upcoming);
-            mPlayUpcoming = (ImageButton) v.findViewById(R.id.play_upcoming);
-            mStopUpcoming = (ImageButton) v.findViewById(R.id.stop_upcoming);
-        }
-
-        @Override
-        public View getSwipeableContainerView() {
-            return mContainer;
+        public QueueItemViewHolder(View itemView) {
+            super(itemView);
+            mContext = itemView.getContext();
+            mContainer = (ViewGroup) itemView.findViewById(R.id.container);
+            mDragHandle = (ImageView) itemView.findViewById(R.id.drag_handle);
+            mTitleView = (TextView) itemView.findViewById(R.id.textView1);
+            mDescriptionView = (TextView) itemView.findViewById(R.id.textView2);
+            mImageView = (ImageView) itemView.findViewById(R.id.imageView1);
+            mPlayPause = (ImageButton) itemView.findViewById(R.id.play_pause);
+            mControls = itemView.findViewById(R.id.controls);
+            mUpcomingControls = itemView.findViewById(R.id.controls_upcoming);
+            mPlayUpcoming = (ImageButton) itemView.findViewById(R.id.play_upcoming);
+            mStopUpcoming = (ImageButton) itemView.findViewById(R.id.stop_upcoming);
         }
 
         private void updateControlsStatus(ControlStatus status) {
@@ -275,121 +275,47 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
         }
     }
 
-    @Override
-    public boolean onCheckCanStartDrag(QueueHolder queueHolder, int x, int y) {
-        final View containerView = queueHolder.mContainer;
-        final View dragHandleView = queueHolder.mDragHandle;
-
-        final int offsetX = containerView.getLeft() + (int) (
-                ViewCompat.getTranslationX(containerView) + 0.5f);
-        final int offsetY = containerView.getTop() + (int) (
-                ViewCompat.getTranslationY(containerView) + 0.5f);
-
-        return Utils.hitTest(dragHandleView, x - offsetX, y - offsetY);
-    }
-
-    @Override
-    public void onMoveItem(int fromPosition, int toPosition) {
-        Log.d(TAG,
-                "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
-
-        if (fromPosition == toPosition) {
-            return;
-        }
-        mProvider.moveItem(fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
-    @Override
-    public int onGetSwipeReactionType(QueueHolder queueHolder, int x, int y) {
-        if (onCheckCanStartDrag(queueHolder, x, y)) {
-            return RecyclerViewSwipeManager.REACTION_CAN_NOT_SWIPE_BOTH;
-        } else {
-            return RecyclerViewSwipeManager.REACTION_CAN_SWIPE_RIGHT;
-        }
-    }
-
-    @Override
-    public void onSetSwipeBackground(QueueHolder queueHolder, int type) {
-        int bgRes = 0;
-        switch (type) {
-            case RecyclerViewSwipeManager.DRAWABLE_SWIPE_NEUTRAL_BACKGROUND:
-                bgRes = R.drawable.bg_swipe_item_neutral;
-                break;
-            case RecyclerViewSwipeManager.DRAWABLE_SWIPE_LEFT_BACKGROUND:
-                bgRes = R.drawable.bg_swipe_item_left;
-                break;
-            case RecyclerViewSwipeManager.DRAWABLE_SWIPE_RIGHT_BACKGROUND:
-                bgRes = R.drawable.bg_swipe_item_right;
-                break;
-        }
-
-        queueHolder.itemView.setBackgroundResource(bgRes);
-    }
-
-    @Override
-    public int onSwipeItem(QueueHolder queueHolder, int result) {
-        Log.d(TAG, "onSwipeItem(result = " + result + ")");
-
-        switch (result) {
-            // swipe right --- remove
-            case RecyclerViewSwipeManager.RESULT_SWIPED_RIGHT:
-                return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM;
-            // swipe left -- pin
-            case RecyclerViewSwipeManager.RESULT_SWIPED_LEFT:
-                return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_MOVE_TO_SWIPED_DIRECTION;
-            // other --- do nothing
-            case RecyclerViewSwipeManager.RESULT_CANCELED:
-            default:
-                return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
-        }
-    }
-
-    @Override
-    public void onPerformAfterSwipeReaction(QueueHolder queueHolder, int result, int reaction) {
-        Log.d(TAG, "onPerformAfterSwipeReaction(result = " + result + ", reaction = " + reaction
-                + ")");
-
-        final int position = queueHolder.getPosition();
-        if (reaction == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM) {
-            mProvider.removeFromQueue(position);
-            notifyItemRemoved(position);
-
-            if (mEventListener != null) {
-                mEventListener.onItemRemoved(position);
-            }
-        } else if (reaction
-                == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_MOVE_TO_SWIPED_DIRECTION) {
-            notifyItemChanged(position);
-
-            if (mEventListener != null) {
-                mEventListener.onItemPinned(position);
-            }
-        }
-    }
-
     public void setEventListener(EventListener eventListener) {
         mEventListener = eventListener;
     }
 
+    /**
+     * Interface for catching clicks on the ViewHolder items
+     */
     public interface EventListener {
-
-        void onItemRemoved(int position);
-
-        void onItemPinned(int position);
-
         void onItemViewClicked(View v);
     }
 
-    @Override
-    public long getItemId(int position) {
-        return mProvider.getItem(position).getItemId();
+    /**
+     * Interface to notify an item ViewHolder of relevant callbacks from {@link
+     * android.support.v7.widget.helper.ItemTouchHelper.Callback}.
+     */
+    public interface ItemTouchHelperViewHolder {
+
+        /**
+         * Called when the {@link ItemTouchHelper} first registers an item as being moved or swiped.
+         * Implementations should update the item view to indicate it's active state.
+         */
+        void onItemSelected();
+
+
+        /**
+         * Called when the {@link ItemTouchHelper} has completed the move or swipe, and the active
+         * item state should be cleared.
+         */
+        void onItemClear();
     }
 
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        mProvider.setOnQueueDataChangedListener(null);
+    /**
+     * Listener for manual initiation of a drag.
+     */
+    public interface OnStartDragListener {
+
+        /**
+         * Called when a view is requesting a start of a drag.
+         */
+        void onStartDrag(RecyclerView.ViewHolder viewHolder);
+
     }
 
 }

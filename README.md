@@ -12,7 +12,6 @@ Here is the list of other reference apps:
 ## Dependencies
 * CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
 * ShowcaseView: can be downloaded at https://github.com/amlcurran/ShowcaseView (see change list 1.2 for details)
-* android-advancedrecyclerview: See https://github.com/h6ah4i/android-advancedrecyclerview
 
 ## Setup Instructions
 * Get a Chromecast device and set it up
@@ -50,6 +49,8 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+2.5
+ * Removed dependency on the Advanced RecyclerView (android-advancedrecyclerview)
 2.4
  * Updated to use CCL 2.5
  * Using the new features in CCL to automatically set up the mini controllers and reconnection logic
