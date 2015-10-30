@@ -49,25 +49,32 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+
 2.6
  * Updated build.gradle to compile with SDK 23 and bumped recyclerview support library to v23.0.1. Although
  version 23.1.0 is out, I have not moved the project to that version due to a bug that is in that
  new version which causes issues when an item in the queue list is swiped away. When that issue is
  addressed, I will update the project accordingly.
+
 2.5
  * Removed dependency on the Advanced RecyclerView (android-advancedrecyclerview)
+
 2.4
  * Updated to use CCL 2.5
  * Using the new features in CCL to automatically set up the mini controllers and reconnection logic
+
 2.3.1
  * Some cleanup
+
 2.3
  * Some minor bug fixes
  * Changing the them defined for the VideoCastControllerActivity
+
 2.2
  * Updating media assets to include three different types: mp4, HLS and DASH. Developers can decide which type of content
  they want to use by updating the VideoProvider.TARGET_FORMAT field; it is currently set to HLS. The HLS content has been
  recreated to provide a better set of segments.
+
 2.1
  * Moving media assets to HLS format: all the videos have been reformatted to HLS to enable more exotic features such as pre-loading. The receiver
  has also been upated so that the included App ID points to a receiver that includes the pre-loading UI appropriate for the pre-loading feature.
