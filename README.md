@@ -49,6 +49,11 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+2.6
+ * Updated build.gradle to compile with SDK 23 and bumped recyclerview support library to v23.0.1. Although
+ version 23.1.0 is out, I have not moved the project to that version due to a bug that is in that
+ new version which causes issues when an item in the queue list is swiped away. When that issue is
+ addressed, I will update the project accordingly.
 2.5
  * Removed dependency on the Advanced RecyclerView (android-advancedrecyclerview)
 2.4
