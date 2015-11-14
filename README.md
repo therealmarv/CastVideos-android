@@ -50,6 +50,10 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
 
 ## Change List
 
+2.6.1
+ * Updated the recyclerview support library to 23.1.1 since the blocking bug has been fixed in this
+ release.
+
 2.6
  * Updated build.gradle to compile with SDK 23 and bumped recyclerview support library to v23.0.1. Although
  version 23.1.0 is out, I have not moved the project to that version due to a bug that is in that
