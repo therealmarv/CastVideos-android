@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.android.builder.core.DefaultManifestParser
 
 buildscript {
     repositories {
@@ -31,15 +32,9 @@ repositories {
 }
 
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 23
-    buildToolsVersion "23"
-
-    defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 23
-    }
+    buildToolsVersion "23.0.2"
 
     sourceSets {
         main {
@@ -49,9 +44,29 @@ android {
         }
     }
 
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 23
+        def manifestParser = new DefaultManifestParser()
+        versionName = manifestParser.getVersionName(android.sourceSets.main.manifest.srcFile)
+        versionCode = manifestParser.getVersionCode(android.sourceSets.main.manifest.srcFile)
+    }
+
+
     lintOptions {
       abortOnError false
   }
+
+    buildTypes {
+        debug {
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.outputFile = new File(output.outputFile.parent, output.outputFile.name.
+                            replace(".apk", "-" + defaultConfig.versionName + ".apk"))
+                }
+            }
+        }
+    }
 }
 
 dependencies {

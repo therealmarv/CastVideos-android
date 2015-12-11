@@ -50,6 +50,10 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
 
 ## Change List
 
+2.7
+ * Updated to use the latest CCL (v2.7.0). This was achieved by updating the initialization of the VideoCastManager
+ in CastApplication.java.
+ 
 2.6.1
  * Updated the recyclerview support library to 23.1.1 since the blocking bug has been fixed in this
  release.

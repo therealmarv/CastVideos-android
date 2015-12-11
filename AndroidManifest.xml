@@ -16,12 +16,8 @@
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.sample.cast.refplayer"
-    android:versionCode="16"
-    android:versionName="2.6.1" >
-
-    <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="22" />
+    android:versionCode="17"
+    android:versionName="2.7" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -105,6 +101,7 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="com.google.android.libraries.cast.companionlibrary.action.toggleplayback" />
                 <action android:name="com.google.android.libraries.cast.companionlibrary.action.stop" />
+                <action android:name="com.google.android.libraries.cast.companionlibrary.action.rewind" />
             </intent-filter>
         </receiver>
 

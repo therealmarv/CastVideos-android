@@ -19,13 +19,11 @@ package com.google.sample.cast.refplayer;
 import com.google.android.gms.cast.CastStatusCodes;
 import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.cast.MediaStatus;
+import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
-import com.google.android.libraries.cast.companionlibrary.cast.exceptions
-        .TransientNetworkDisconnectionException;
-import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastController;
-import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 
 import android.app.Application;
 
@@ -48,26 +46,23 @@ public class CastApplication extends Application {
         super.onCreate();
         String applicationId = getString(R.string.app_id);
 
-        // initialize VideoCastManager
-        VideoCastManager.
-                initialize(this, applicationId, VideoCastControllerActivity.class, null).
-                setVolumeStep(VOLUME_INCREMENT).
-                enableFeatures(VideoCastManager.FEATURE_NOTIFICATION |
-                        VideoCastManager.FEATURE_LOCKSCREEN |
-                        VideoCastManager.FEATURE_WIFI_RECONNECT |
-                        VideoCastManager.FEATURE_AUTO_RECONNECT |
-                        VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
-                        VideoCastManager.FEATURE_DEBUGGING);
-
-        // this is the default behavior but is mentioned to make it clear that it is configurable.
-        VideoCastManager.getInstance().setNextPreviousVisibilityPolicy(
-                VideoCastController.NEXT_PREV_VISIBILITY_POLICY_DISABLED);
-
-        // this is to set the launch options, the following values are the default values
-        VideoCastManager.getInstance().setLaunchOptions(false, Locale.getDefault());
-
-        // this is the default behavior but is mentioned to make it clear that it is configurable.
-        VideoCastManager.getInstance().setCastControllerImmersive(true);
+        // Build a CastConfiguration object and initialize VideoCastManager
+        CastConfiguration options = new CastConfiguration.Builder(applicationId)
+                .enableAutoReconnect()
+                .enableCaptionManagement()
+                .enableDebug()
+                .enableLockScreen()
+                .enableNotification()
+                .enableWifiReconnection()
+                .setCastControllerImmersive(true)
+                .setLaunchOptions(false, Locale.getDefault())
+                .setNextPrevVisibilityPolicy(CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_DISABLED)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_REWIND, false)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_PLAY_PAUSE, true)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_DISCONNECT, true)
+                .setForwardStep(10)
+                .build();
+        VideoCastManager.initialize(this, options);
     }
 
     /**
