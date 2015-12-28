@@ -73,8 +73,7 @@ dependencies {
     compile files('libs/android-query.0.25.10.jar')
     // to get around https://code.google.com/p/android/issues/detail?id=52962, we need to
     // depend on both debug and release versions of the library
-    releaseCompile project(path: '..:CastCompanionLibrary', configuration: 'release')
-    debugCompile project(path: '..:CastCompanionLibrary', configuration: 'debug')
-    compile 'com.github.amlcurran.showcaseview:ShowCaseLibrary@aar'
+    releaseCompile project(path: ':CastCompanionLibrary', configuration: 'release')
+    debugCompile project(path: ':CastCompanionLibrary', configuration: 'debug')
     compile 'com.android.support:recyclerview-v7:23.1.1'
 }

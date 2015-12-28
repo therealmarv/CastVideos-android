@@ -11,7 +11,7 @@ Here is the list of other reference apps:
 
 ## Dependencies
 * CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
-* ShowcaseView: can be downloaded at https://github.com/amlcurran/ShowcaseView (see change list 1.2 for details)
+* Android Query library: can be downloaded at https://github.com/androidquery/androidquery
 
 ## Setup Instructions
 * Get a Chromecast device and set it up
@@ -49,6 +49,10 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+
+2.7.1
+ * Updated to use CCL v2.7.1 and removed dependency on the ShowcaseView library.
+ * Updated how the CCL dependency is added in
 
 2.7
  * Updated to use the latest CCL (v2.7.0). This was achieved by updating the initialization of the VideoCastManager

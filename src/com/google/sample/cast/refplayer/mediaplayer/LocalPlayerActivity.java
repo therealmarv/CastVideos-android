@@ -690,7 +690,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
                     RelativeLayout.LayoutParams(displaySize.x,
                     (int) (displaySize.x * mAspectRatio));
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
-            //lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             mVideoView.setLayoutParams(lp);
             mVideoView.invalidate();
         }

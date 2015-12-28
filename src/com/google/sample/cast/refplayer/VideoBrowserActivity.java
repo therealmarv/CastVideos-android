@@ -20,7 +20,7 @@ import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
+import com.google.android.libraries.cast.companionlibrary.widgets.IntroductoryOverlay;
 import com.google.sample.cast.refplayer.queue.ui.QueueListViewActivity;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 
@@ -31,24 +31,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.MediaRouteButton;
-import android.support.v7.media.MediaRouter.RouteInfo;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 public class VideoBrowserActivity extends AppCompatActivity {
 
     private static final String TAG = "VideoBrowserActivity";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
-    private MiniController mMini;
     private MenuItem mediaRouteMenuItem;
     private boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private Toolbar mToolbar;
@@ -100,17 +93,14 @@ public class VideoBrowserActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCastDeviceDetected(final RouteInfo info) {
-                if (!CastPreference.isFtuShown(VideoBrowserActivity.this) && mIsHoneyCombOrAbove) {
-                    CastPreference.setFtuShown(VideoBrowserActivity.this);
+            public void onCastAvailabilityChanged(boolean castPresent) {
+                if (castPresent && mIsHoneyCombOrAbove) {
 
-                    Log.d(TAG, "Route is visible: " + info);
                     new Handler().postDelayed(new Runnable() {
 
                         @Override
                         public void run() {
                             if (mediaRouteMenuItem.isVisible()) {
-                                Log.d(TAG, "Cast Icon is visible: " + info.getName());
                                 showFtu();
                             }
                         }
@@ -164,14 +154,18 @@ public class VideoBrowserActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void showFtu() {
-        Menu menu = mToolbar.getMenu();
-        View view = menu.findItem(R.id.media_route_menu_item).getActionView();
-        if (view != null && view instanceof MediaRouteButton) {
-            new ShowcaseView.Builder(this)
-                    .setTarget(new ViewTarget(view))
-                    .setContentTitle(R.string.touch_to_cast)
-                    .build();
-        }
+        IntroductoryOverlay overlay = new IntroductoryOverlay.Builder(this)
+                .setMenuItem(mediaRouteMenuItem)
+                .setTitleText(R.string.intro_overlay_text)
+                .setSingleTime()
+                .setOnDismissed(new IntroductoryOverlay.OnOverlayDismissedListener() {
+                    @Override
+                    public void onOverlayDismissed() {
+                        Log.d(TAG, "overlay is dismissed");
+                    }
+                })
+                .build();
+        overlay.show();
     }
 
     @Override
