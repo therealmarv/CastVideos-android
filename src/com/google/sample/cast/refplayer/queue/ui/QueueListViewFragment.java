@@ -16,6 +16,16 @@
 
 package com.google.sample.cast.refplayer.queue.ui;
 
+import com.google.android.gms.cast.MediaQueueItem;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastException;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
+import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
+import com.google.android.libraries.cast.companionlibrary.utils.Utils;
+import com.google.sample.cast.refplayer.CastApplication;
+import com.google.sample.cast.refplayer.R;
+import com.google.sample.cast.refplayer.queue.QueueDataProvider;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,17 +36,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.android.gms.cast.MediaQueueItem;
-import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastException;
-import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
-import com.google.android.libraries.cast.companionlibrary.cast.exceptions
-        .TransientNetworkDisconnectionException;
-import com.google.android.libraries.cast.companionlibrary.utils.Utils;
-import com.google.sample.cast.refplayer.CastApplication;
-import com.google.sample.cast.refplayer.R;
-import com.google.sample.cast.refplayer.queue.QueueDataProvider;
 
 /**
  * A fragment to show the list of queue items.

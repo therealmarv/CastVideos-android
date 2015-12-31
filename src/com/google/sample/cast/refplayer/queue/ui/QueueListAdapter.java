@@ -16,6 +16,14 @@
 
 package com.google.sample.cast.refplayer.queue.ui;
 
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaQueueItem;
+import com.google.android.gms.cast.MediaStatus;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.sample.cast.refplayer.R;
+import com.google.sample.cast.refplayer.queue.QueueDataProvider;
+
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
@@ -28,14 +36,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.cast.MediaInfo;
-import com.google.android.gms.cast.MediaMetadata;
-import com.google.android.gms.cast.MediaQueueItem;
-import com.google.android.gms.cast.MediaStatus;
-import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.sample.cast.refplayer.R;
-import com.google.sample.cast.refplayer.queue.QueueDataProvider;
 
 import com.androidquery.AQuery;
 
@@ -87,6 +87,12 @@ public class QueueListAdapter
         sGreyColor = context.getResources().getColor(android.R.color.secondary_text_light);
         sBlackColor = context.getResources().getColor(R.color.black);
         sYellowColor = context.getResources().getColor(R.color.ccl_mini_upcoming_upnext_color);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        MediaQueueItem item = mProvider.getItem(position);
+        return (long) item.getItemId();
     }
 
     private void onItemViewClick(View v) {
