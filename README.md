@@ -10,7 +10,8 @@ Here is the list of other reference apps:
 * [Receiver: Cast-Player-Sample](https://github.com/googlecast/Cast-Player-Sample)
 
 ## Dependencies
-* CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
+* CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android or
+  can be added from jCenter repo.
 * Android Query library: can be downloaded at https://github.com/androidquery/androidquery
 
 ## Setup Instructions
@@ -19,9 +20,9 @@ Here is the list of other reference apps:
 You will get an App ID when you finish registering your application. This project uses a published Application ID that
 can be used to run the app without using your own ID but if you need to do any console debugging, you would need
 to have your own ID.
-* Setup the project dependencies
-  * For Android Studio: make sure you are running the latest version (it may work on earlier versions). Dependencies are
-   setup in the build.gradle file and the settings.gradle; it assumes you have cloned the CastCompanionLibrary-android project
+* Setup the project dependencies (see build.gradle for an alternate inclusion of CCL as a dependency)
+  * For Android Studio: Instructions below add CCL dependency as a module in the build.gradle. Dependencies are
+   setup in the build.gradle file and the settings.gradle. it assumes you have cloned the CastCompanionLibrary-android project
    into a parallel project named "CastCompanionLibrary". If you want to change the name, make sure it gets updated in both
    settings.gradle and build.gradle. Quick steps to clone and compile the app from command line (on a Linux or Mac) are:
      * $ git clone https://github.com/googlecast/CastVideos-android.git CastVideos
