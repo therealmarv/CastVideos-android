@@ -104,7 +104,6 @@ public class QueueListAdapter
     @Override
     public void onItemDismiss(int position) {
         mProvider.removeFromQueue(position);
-        notifyItemRemoved(position);
     }
 
     @Override

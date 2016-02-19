@@ -50,6 +50,10 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
 
 ## Change List
 
+2.8.0
+ * Updated to use CCL v2.8.0.
+ * Fixed a couple of bugs.
+
 2.7.1
  * Updated to use CCL v2.7.1 and removed dependency on the ShowcaseView library.
  * Updated how the CCL dependency is added in

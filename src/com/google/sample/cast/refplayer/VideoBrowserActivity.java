@@ -42,9 +42,10 @@ public class VideoBrowserActivity extends AppCompatActivity {
     private static final String TAG = "VideoBrowserActivity";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
-    private MenuItem mediaRouteMenuItem;
+    private MenuItem mMediaRouteMenuItem;
     private boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private Toolbar mToolbar;
+    private IntroductoryOverlay mOverlay;
 
     /*
      * (non-Javadoc)
@@ -95,16 +96,7 @@ public class VideoBrowserActivity extends AppCompatActivity {
             @Override
             public void onCastAvailabilityChanged(boolean castPresent) {
                 if (castPresent && mIsHoneyCombOrAbove) {
-
-                    new Handler().postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (mediaRouteMenuItem.isVisible()) {
-                                showFtu();
-                            }
-                        }
-                    }, 1000);
+                    showOverlay();
                 }
             }
         };
@@ -114,7 +106,6 @@ public class VideoBrowserActivity extends AppCompatActivity {
 
     private void setupActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //mToolbar.setLogo(R.drawable.actionbar_logo_castvideos);
         mToolbar.setTitle(R.string.app_name);
         setSupportActionBar(mToolbar);
     }
@@ -124,7 +115,7 @@ public class VideoBrowserActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.browse, menu);
 
-        mediaRouteMenuItem = mCastManager.
+        mMediaRouteMenuItem = mCastManager.
                 addMediaRouterButton(menu, R.id.media_route_menu_item);
 
         return true;
@@ -153,19 +144,30 @@ public class VideoBrowserActivity extends AppCompatActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void showFtu() {
-        IntroductoryOverlay overlay = new IntroductoryOverlay.Builder(this)
-                .setMenuItem(mediaRouteMenuItem)
-                .setTitleText(R.string.intro_overlay_text)
-                .setSingleTime()
-                .setOnDismissed(new IntroductoryOverlay.OnOverlayDismissedListener() {
-                    @Override
-                    public void onOverlayDismissed() {
-                        Log.d(TAG, "overlay is dismissed");
-                    }
-                })
-                .build();
-        overlay.show();
+    private void showOverlay() {
+        if(mOverlay != null) {
+            mOverlay.remove();
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mMediaRouteMenuItem.isVisible()) {
+                    mOverlay = new IntroductoryOverlay.Builder(VideoBrowserActivity.this)
+                            .setMenuItem(mMediaRouteMenuItem)
+                            .setTitleText(R.string.intro_overlay_text)
+                            .setSingleTime()
+                            .setOnDismissed(new IntroductoryOverlay.OnOverlayDismissedListener() {
+                                @Override
+                                public void onOverlayDismissed() {
+                                    Log.d(TAG, "overlay is dismissed");
+                                    mOverlay = null;
+                                }
+                            })
+                            .build();
+                    mOverlay.show();
+                }
+            }
+        }, 1000);
     }
 
     @Override

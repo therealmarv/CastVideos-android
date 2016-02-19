@@ -59,7 +59,6 @@ public class Utils {
     @SuppressWarnings("deprecation")
     /**
      * Returns the screen/display size
-     *
      */
     public static Point getDisplaySize(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
