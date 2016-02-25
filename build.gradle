@@ -78,8 +78,8 @@ android {
 
  dependencies {
      compile files('libs/android-query.0.25.10.jar')
-     compile 'com.google.android.libraries.cast.companionlibrary:ccl:2.8.1'
-     compile 'com.android.support:recyclerview-v7:23.1.1'
+     compile 'com.google.android.libraries.cast.companionlibrary:ccl:2.8.2'
+     compile 'com.android.support:recyclerview-v7:23.2.0'
  }
  */
 dependencies {
@@ -88,5 +88,5 @@ dependencies {
     // depend on both debug and release versions of the library
     releaseCompile project(path: ':CastCompanionLibrary', configuration: 'release')
     debugCompile project(path: ':CastCompanionLibrary', configuration: 'debug')
-    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.2.0'
 }
