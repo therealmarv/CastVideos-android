@@ -52,10 +52,13 @@ android {
         versionCode = manifestParser.getVersionCode(android.sourceSets.main.manifest.srcFile)
     }
 
-
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
+    }
+        
     lintOptions {
       abortOnError false
-  }
+    }
 
     buildTypes {
         debug {
