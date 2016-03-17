@@ -181,7 +181,7 @@ public class VideoProvider {
         MediaMetadata movieMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
 
         movieMetadata.putString(MediaMetadata.KEY_SUBTITLE, studio);
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, title);
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, "http://videos.whatever.acoolcdn.com/content/video/premium/201603/01/reallycoolvideo.mp4?metadata1=20160317142016&metadata2=20160317162016&a=-1&b=10000&int=15%25&cb=4&hash=0ef2ad8f01876a9051220");
         movieMetadata.addImage(new WebImage(Uri.parse(imgUrl)));
         movieMetadata.addImage(new WebImage(Uri.parse(bigImageUrl)));
         JSONObject jsonObj = null;
